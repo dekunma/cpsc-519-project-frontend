@@ -92,7 +92,7 @@ const LoginScreen = ({navigation}) => {
             onPress={() => login()}
             isDisabled={isLoginButtonDisabled}>
             <ButtonText w="$full" textAlign="center">
-              GET STARTED
+              SIGN IN
             </ButtonText>
           </Button>
           <Button size="lg" w="$full" variant="link">
