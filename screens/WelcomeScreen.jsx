@@ -8,11 +8,12 @@ import {
   Image,
   Text,
   VStack,
+  View,
 } from '@gluestack-ui/themed';
 
-const Welcome = () => {
+const WelcomeScreen = ({navigation}) => {
   return (
-    <>
+    <View>
       <Center justifyContent="center" h="$full" p="$1/5">
         <VStack space="2xl" alignItems="center" pb="$2/3">
           <Box>
@@ -25,7 +26,9 @@ const Welcome = () => {
           </Box>
 
           <Box alignItems="center">
-            <Heading color="$primary500">APP NAME TBD</Heading>
+            <Heading size="xl" color="$primary500">
+              APP NAME TBD
+            </Heading>
             <Text color="$secondary300" textAlign="center">
               Some Secondary text to put here to introduce our app
             </Text>
@@ -40,14 +43,18 @@ const Welcome = () => {
           </ButtonText>
         </Button>
 
-        <Button size="lg" w="$full" variant="outline">
+        <Button
+          size="lg"
+          w="$full"
+          variant="outline"
+          onPress={() => navigation.navigate('LoginScreen')}>
           <ButtonText w="$full" textAlign="center">
             I ALREADY HAVE AN ACCOUNT
           </ButtonText>
         </Button>
       </Box>
-    </>
+    </View>
   );
 };
 
-export default Welcome;
+export default WelcomeScreen;
