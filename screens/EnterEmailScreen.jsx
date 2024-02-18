@@ -16,15 +16,18 @@ const EnterEmailScreen = ({navigation}) => {
   const handlePressButton = () => {
     setIsButtonDisabled(true);
     // navigation.navigate('LoginScreen');
+    navigation.navigate('VerificationCodeScreen', {
+      email: 'xx@xx.xx',
+    });
   };
 
   return (
     <>
       <Center p="$4" h="$full">
-        <Heading size="xl" color="$primary500" mb="$10">
+        <Heading size="xl" color="$primary500" mb="$4">
           Enter Your Email
         </Heading>
-        <Text color="$secondary300" textAlign="center">
+        <Text color="$secondary300" textAlign="center" mb="$10">
           We will send a verification code to your email
         </Text>
         <Box w="$full" mb="$10" p="$4">

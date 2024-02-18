@@ -7,6 +7,8 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import EnterEmailScreen from './screens/EnterEmailScreen';
+import VerificationCodeScreen from './screens/VerificationCodeScreen';
+import CreatePasswordScreen from './screens/CreatePasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +42,16 @@ function App() {
           <Stack.Screen
             name="EnterEmailScreen"
             component={EnterEmailScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="VerificationCodeScreen"
+            component={VerificationCodeScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="CreatePasswordScreen"
+            component={CreatePasswordScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
