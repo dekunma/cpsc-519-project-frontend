@@ -37,7 +37,11 @@ const WelcomeScreen = ({navigation}) => {
       </Center>
 
       <Box style={{position: 'absolute', bottom: 40}} p="$4">
-        <Button size="lg" w="$full" mb="$4">
+        <Button
+          size="lg"
+          w="$full"
+          mb="$4"
+          onPress={() => navigation.navigate('EnterEmailScreen')}>
           <ButtonText w="$full" textAlign="center">
             GET STARTED
           </ButtonText>

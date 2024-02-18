@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import WelcomeScreen from './screens/WelcomeScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
+import EnterEmailScreen from './screens/EnterEmailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,11 @@ function App() {
             options={{headerShown: false}}
           />
           <Stack.Screen name="TempHomeScreen" component={TempHomeScreen} />
+          <Stack.Screen
+            name="EnterEmailScreen"
+            component={EnterEmailScreen}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       </GluestackUIProvider>
     </NavigationContainer>
