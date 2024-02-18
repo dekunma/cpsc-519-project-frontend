@@ -17,9 +17,12 @@ import api from '../api';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [isLoginButtonDisabled, setIsLoginButtonDisabled] =
+    React.useState(false);
 
   const login = () => {
     const LOGIN_ROUTE = '/users/log-in';
+    setIsLoginButtonDisabled(true);
 
     api
       .post(LOGIN_ROUTE, {email, password})
@@ -30,6 +33,9 @@ const LoginScreen = ({navigation}) => {
       })
       .catch(error => {
         console.log(error);
+      })
+      .finally(() => {
+        setIsLoginButtonDisabled(false);
       });
   };
 
@@ -79,7 +85,12 @@ const LoginScreen = ({navigation}) => {
           </FormControl>
         </Box>
         <Box>
-          <Button size="lg" w="$full" mb="$1" onPress={() => login()}>
+          <Button
+            size="lg"
+            w="$full"
+            mb="$1"
+            onPress={() => login()}
+            isDisabled={isLoginButtonDisabled}>
             <ButtonText w="$full" textAlign="center">
               GET STARTED
             </ButtonText>
