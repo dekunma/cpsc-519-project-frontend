@@ -12,7 +12,27 @@ import {
   InputField,
 } from '@gluestack-ui/themed';
 
-const LoginScreen = () => {
+import api from '../api';
+
+const LoginScreen = ({navigation}) => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const login = () => {
+    const LOGIN_ROUTE = '/users/log-in';
+
+    api
+      .post(LOGIN_ROUTE, {email, password})
+      .then(response => {
+        console.log(response.data);
+        const token = response.data.token;
+        navigation.navigate('TempHomeScreen', {token: token});
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
       <Center p="$4" h="$full">
@@ -32,7 +52,11 @@ const LoginScreen = () => {
               <FormControlLabelText>Email</FormControlLabelText>
             </FormControlLabel>
             <Input>
-              <InputField type="email" placeholder="Email" />
+              <InputField
+                onChangeText={e => setEmail(e)}
+                type="email"
+                placeholder="Email"
+              />
             </Input>
           </FormControl>
           <FormControl
@@ -46,12 +70,16 @@ const LoginScreen = () => {
               <FormControlLabelText>Password</FormControlLabelText>
             </FormControlLabel>
             <Input>
-              <InputField type="password" placeholder="Password" />
+              <InputField
+                onChangeText={e => setPassword(e)}
+                type="password"
+                placeholder="Password"
+              />
             </Input>
           </FormControl>
         </Box>
         <Box>
-          <Button size="lg" w="$full" mb="$1">
+          <Button size="lg" w="$full" mb="$1" onPress={() => login()}>
             <ButtonText w="$full" textAlign="center">
               GET STARTED
             </ButtonText>
