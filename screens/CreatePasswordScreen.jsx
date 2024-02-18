@@ -18,13 +18,16 @@ import {
 } from '@gluestack-ui/themed';
 import React from 'react';
 
-const CreatePasswordScreen = ({navigation}) => {
+import api from '../api';
+
+const CreatePasswordScreen = ({navigation, route}) => {
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [isLoginButtonDisabled, setIsLoginButtonDisabled] =
     React.useState(false);
   const [isPasswordInvalid, setIsPasswordInvalid] = React.useState(false);
   const [passwordInvalidText, setPasswordInvalidText] = React.useState('');
+  const {email, code} = route.params;
 
   const validatePassword = () => {
     if (password.length < 8) {
@@ -50,6 +53,31 @@ const CreatePasswordScreen = ({navigation}) => {
       setIsLoginButtonDisabled(false);
       return;
     }
+
+    api
+      .post('/users/sign-up', {
+        email: email,
+        password: password,
+        verification_code: code,
+      })
+      .then(() => {
+        api
+          .post('/users/log-in', {email: email, password: password})
+          .then(r => {
+            const token = r.data.token;
+            navigation.navigate('TempHomeScreen', {token: token});
+            console.log(r.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      })
+      .catch(e => {
+        console.log(e);
+      })
+      .finally(() => {
+        setIsLoginButtonDisabled(false);
+      });
   };
 
   return (

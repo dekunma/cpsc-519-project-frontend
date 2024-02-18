@@ -15,14 +15,41 @@ import {
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 
+import api from '../api';
+
 const CELL_COUNT = 4;
 const VerificationCodeScreen = ({navigation, route}) => {
+  const {email} = route.params;
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
+  const [isContinueButtonDisabled, setIsContinueButtonDisabled] =
+    useState(false);
+
+  const handlePressContinue = () => {
+    setIsContinueButtonDisabled(true);
+    api
+      .post('/users/check-verification-code', {
+        email: email,
+        verification_code: value,
+      })
+      .then(() => {
+        navigation.navigate('CreatePasswordScreen', {
+          email: email,
+          code: value,
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      })
+      .finally(() => {
+        setIsContinueButtonDisabled(false);
+      });
+  };
+
   return (
     <>
       <Center p="$4" h="$full">
@@ -33,7 +60,7 @@ const VerificationCodeScreen = ({navigation, route}) => {
           We have sent a code to
         </Text>
         <Text color="$secondary300" textAlign="center" mb="$4">
-          {route.params.email}
+          {email}
         </Text>
         <CodeField
           ref={ref}
@@ -60,8 +87,12 @@ const VerificationCodeScreen = ({navigation, route}) => {
             w="$full"
             onPress={() =>
               navigation.navigate('CreatePasswordScreen', {code: value})
-            }>
-            <ButtonText w="$full" textAlign="center">
+            }
+            isDisabled={isContinueButtonDisabled}>
+            <ButtonText
+              w="$full"
+              textAlign="center"
+              onPress={handlePressContinue}>
               CONTINUE
             </ButtonText>
           </Button>

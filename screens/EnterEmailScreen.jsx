@@ -10,15 +10,27 @@ import {
   Text,
 } from '@gluestack-ui/themed';
 
+import api from '../api';
+
 const EnterEmailScreen = ({navigation}) => {
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+  const [email, setEmail] = React.useState('');
 
   const handlePressButton = () => {
     setIsButtonDisabled(true);
-    // navigation.navigate('LoginScreen');
-    navigation.navigate('VerificationCodeScreen', {
-      email: 'xx@xx.xx',
-    });
+    api
+      .post('/users/send-verification-code', {email: email})
+      .then(() => {
+        navigation.navigate('VerificationCodeScreen', {
+          email: email,
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      })
+      .finally(() => {
+        setIsButtonDisabled(false);
+      });
   };
 
   return (
@@ -36,7 +48,7 @@ const EnterEmailScreen = ({navigation}) => {
             size="lg"
             isInvalid={false}
             isReadOnly={false}>
-            <InputField placeholder="Email" />
+            <InputField placeholder="Email" onChangeText={e => setEmail(e)} />
           </Input>
         </Box>
         <Box>
