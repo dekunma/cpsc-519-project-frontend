@@ -18,7 +18,7 @@ import {
 } from '@gluestack-ui/themed';
 import React from 'react';
 
-import api from '../api';
+import api from '../../api';
 
 const CreatePasswordScreen = ({navigation, route}) => {
   const [password, setPassword] = React.useState('');

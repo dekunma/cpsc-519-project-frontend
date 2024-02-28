@@ -5,10 +5,10 @@ import {config} from '@gluestack-ui/config';
 import {NavigationContainer} from '@react-navigation/native';
 import WelcomeScreen from './screens/WelcomeScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginScreen from './screens/LoginScreen';
-import EnterEmailScreen from './screens/EnterEmailScreen';
-import VerificationCodeScreen from './screens/VerificationCodeScreen';
-import CreatePasswordScreen from './screens/CreatePasswordScreen';
+import LoginScreen from './screens/login/LoginScreen';
+import EnterEmailScreen from './screens/signup/EnterEmailScreen';
+import VerificationCodeScreen from './screens/signup/VerificationCodeScreen';
+import CreatePasswordScreen from './screens/signup/CreatePasswordScreen';
 
 const Stack = createNativeStackNavigator();
 

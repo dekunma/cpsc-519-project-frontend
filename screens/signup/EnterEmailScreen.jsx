@@ -17,7 +17,7 @@ import {
   Text,
 } from '@gluestack-ui/themed';
 
-import api from '../api';
+import api from '../../api';
 
 const EnterEmailScreen = ({navigation}) => {
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);

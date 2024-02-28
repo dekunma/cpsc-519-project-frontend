@@ -12,7 +12,7 @@ import {
   InputField,
 } from '@gluestack-ui/themed';
 
-import api from '../api';
+import api from '../../api';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState('');

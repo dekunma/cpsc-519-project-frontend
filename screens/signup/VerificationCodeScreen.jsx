@@ -15,7 +15,7 @@ import {
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 
-import api from '../api';
+import api from '../../api';
 
 const CELL_COUNT = 4;
 const VerificationCodeScreen = ({navigation, route}) => {
