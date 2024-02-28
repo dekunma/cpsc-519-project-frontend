@@ -11,6 +11,7 @@ import VerificationCodeScreen from './screens/signup/VerificationCodeScreen';
 import CreatePasswordScreen from './screens/signup/CreatePasswordScreen';
 import HomeScreen from './screens/HomeScreen';
 import SplashScreen from './screens/SplashScreen';
+import NewPostScreen from './screens/NewPostScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,7 @@ function App() {
             name="CreatePasswordScreen"
             component={CreatePasswordScreen}
           />
+          <Stack.Screen name="NewPostScreen" component={NewPostScreen} />
         </Stack.Navigator>
       </GluestackUIProvider>
     </NavigationContainer>
