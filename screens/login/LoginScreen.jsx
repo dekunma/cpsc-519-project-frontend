@@ -13,6 +13,7 @@ import {
 } from '@gluestack-ui/themed';
 
 import api from '../../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState('');
@@ -26,10 +27,11 @@ const LoginScreen = ({navigation}) => {
 
     api
       .post(LOGIN_ROUTE, {email, password})
-      .then(response => {
+      .then(async response => {
         console.log(response.data);
         const token = response.data.token;
-        navigation.navigate('TempHomeScreen', {token: token});
+        await AsyncStorage.setItem('token', token);
+        navigation.navigate('HomeScreen', {token: token});
       })
       .catch(error => {
         console.log(error);

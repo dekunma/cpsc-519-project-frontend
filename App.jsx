@@ -1,6 +1,6 @@
 import React from 'react';
 import {enableLatestRenderer} from 'react-native-maps';
-import {GluestackUIProvider, View, Text} from '@gluestack-ui/themed';
+import {GluestackUIProvider} from '@gluestack-ui/themed';
 import {config} from '@gluestack-ui/config';
 import {NavigationContainer} from '@react-navigation/native';
 import WelcomeScreen from './screens/WelcomeScreen';
@@ -9,50 +9,30 @@ import LoginScreen from './screens/login/LoginScreen';
 import EnterEmailScreen from './screens/signup/EnterEmailScreen';
 import VerificationCodeScreen from './screens/signup/VerificationCodeScreen';
 import CreatePasswordScreen from './screens/signup/CreatePasswordScreen';
+import HomeScreen from './screens/HomeScreen';
+import SplashScreen from './screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
 enableLatestRenderer();
 
-const TempHomeScreen = ({route}) => {
-  return (
-    <View>
-      <Text>TempHomeScreen</Text>
-      <Text>{route.params.token}</Text>
-    </View>
-  );
-};
-
 function App() {
   return (
     <NavigationContainer>
       <GluestackUIProvider config={config}>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="WelcomeScreen"
-            component={WelcomeScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen name="TempHomeScreen" component={TempHomeScreen} />
-          <Stack.Screen
-            name="EnterEmailScreen"
-            component={EnterEmailScreen}
-            options={{headerShown: false}}
-          />
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="EnterEmailScreen" component={EnterEmailScreen} />
           <Stack.Screen
             name="VerificationCodeScreen"
             component={VerificationCodeScreen}
-            options={{headerShown: false}}
           />
           <Stack.Screen
             name="CreatePasswordScreen"
             component={CreatePasswordScreen}
-            options={{headerShown: false}}
           />
         </Stack.Navigator>
       </GluestackUIProvider>
