@@ -61,7 +61,10 @@ const HomeScreen = ({navigation}) => {
     <>
       <Box flex={1}>
         <Box flex={1}>
-          <ProfileScreen isActive={activeTab === 'Profile'} />
+          <ProfileScreen
+            isActive={activeTab === 'Profile'}
+            navigation={navigation}
+          />
           <HomeScreenContent isActive={activeTab === 'Home'} />
         </Box>
 
