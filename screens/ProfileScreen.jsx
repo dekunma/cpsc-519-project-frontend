@@ -15,34 +15,84 @@ import {
   ButtonText,
   Button,
   Divider,
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogHeader,
+  CloseIcon,
+  AlertDialogBody,
+  AlertDialogFooter,
 } from '@gluestack-ui/themed';
 import {
   ChevronRight,
   User,
   Settings,
-  Divide,
   AsteriskSquare,
 } from 'lucide-react-native';
 import {jwtDecode} from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {decode} from 'base-64';
+import {AlertDialogContent} from '@gluestack-ui/themed';
+import {AlertDialogCloseButton} from '@gluestack-ui/themed';
 
 global.atob = decode;
 
-const LogoutFab = ({navigation}) => {
-  const handleLogout = async () => {
-    navigation.navigate('WelcomeScreen');
-    await AsyncStorage.removeItem('token');
+const LogoutAlertDialog = ({
+  openLogoutAlertDialog,
+  setOpenLogoutAlertDialog,
+  navigation,
+}) => {
+  const handleClose = () => {
+    setOpenLogoutAlertDialog(false);
+  };
+
+  const handleLogout = () => {
+    AsyncStorage.removeItem('token')
+      .then(() => {
+        handleClose();
+        navigation.replace('WelcomeScreen');
+      })
+      .catch(e => console.log(e));
   };
 
   return (
+    <AlertDialog isOpen={openLogoutAlertDialog} onClose={handleClose}>
+      <AlertDialogBackdrop />
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <Heading>Log Out</Heading>
+          <AlertDialogCloseButton>
+            <Icon as={CloseIcon} />
+          </AlertDialogCloseButton>
+        </AlertDialogHeader>
+        <AlertDialogBody>
+          <Text>Are you sure to log out?</Text>
+        </AlertDialogBody>
+        <AlertDialogFooter>
+          <Button
+            variant="outline"
+            action="secondary"
+            onPress={handleClose}
+            mr="$3">
+            <ButtonText>Cancel</ButtonText>
+          </Button>
+          <Button action="negative" onPress={handleLogout}>
+            <ButtonText>Logout</ButtonText>
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const LogoutButton = ({setOpenLogoutAlertDialog}) => {
+  return (
     <Center>
-      <Box w="$2/3" borderRadius="$sm" mb="$4">
+      <Box w="$5/6" borderRadius="$sm" mb="$4">
         <Button
           size="lg"
           action="negative"
           placement="bottom center"
-          onPress={handleLogout}
+          onPress={() => setOpenLogoutAlertDialog(true)}
           variant="outline">
           <ButtonText>Log Out</ButtonText>
         </Button>
@@ -78,6 +128,8 @@ const ButtonGroup = () => {
 const ProfileScreen = ({navigation, isActive}) => {
   const name = 'USER NAME';
   const [email, setEmail] = useState('');
+  const [openLogoutAlertDialog, setOpenLogoutAlertDialog] =
+    React.useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem('token')
@@ -117,7 +169,14 @@ const ProfileScreen = ({navigation, isActive}) => {
         <ButtonGroup />
         <Divider />
       </VStack>
-      <LogoutFab navigation={navigation} />
+
+      <LogoutAlertDialog
+        openLogoutAlertDialog={openLogoutAlertDialog}
+        setOpenLogoutAlertDialog={setOpenLogoutAlertDialog}
+        navigation={navigation}
+      />
+
+      <LogoutButton setOpenLogoutAlertDialog={setOpenLogoutAlertDialog} />
     </Box>
   );
 };
