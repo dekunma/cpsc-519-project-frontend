@@ -126,7 +126,7 @@ const ButtonGroup = () => {
 };
 
 const ProfileScreen = ({navigation, isActive}) => {
-  const name = 'USER NAME';
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] =
     React.useState(false);
@@ -135,6 +135,7 @@ const ProfileScreen = ({navigation, isActive}) => {
     AsyncStorage.getItem('token')
       .then(token => {
         setEmail(jwtDecode(token).email);
+        setName(jwtDecode(token).name);
       })
       .catch(e => console.log(e));
   }, []);
