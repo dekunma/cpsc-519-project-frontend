@@ -15,74 +15,31 @@ import {
   ButtonText,
   Button,
   Divider,
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogHeader,
-  CloseIcon,
-  AlertDialogBody,
-  AlertDialogFooter,
+  FormControl,
+  Input,
+  InputField,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
 } from '@gluestack-ui/themed';
 import {
   ChevronRight,
   User,
   Settings,
   AsteriskSquare,
+  AlertCircleIcon,
 } from 'lucide-react-native';
 import {jwtDecode} from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {decode} from 'base-64';
-import {AlertDialogContent} from '@gluestack-ui/themed';
-import {AlertDialogCloseButton} from '@gluestack-ui/themed';
+
+import Dialog from '../components/Dialog';
+
+import api from '../api';
 
 global.atob = decode;
-
-const LogoutAlertDialog = ({
-  openLogoutAlertDialog,
-  setOpenLogoutAlertDialog,
-  navigation,
-}) => {
-  const handleClose = () => {
-    setOpenLogoutAlertDialog(false);
-  };
-
-  const handleLogout = () => {
-    AsyncStorage.removeItem('token')
-      .then(() => {
-        handleClose();
-        navigation.replace('WelcomeScreen');
-      })
-      .catch(e => console.log(e));
-  };
-
-  return (
-    <AlertDialog isOpen={openLogoutAlertDialog} onClose={handleClose}>
-      <AlertDialogBackdrop />
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <Heading>Log Out</Heading>
-          <AlertDialogCloseButton>
-            <Icon as={CloseIcon} />
-          </AlertDialogCloseButton>
-        </AlertDialogHeader>
-        <AlertDialogBody>
-          <Text>Are you sure to log out?</Text>
-        </AlertDialogBody>
-        <AlertDialogFooter>
-          <Button
-            variant="outline"
-            action="secondary"
-            onPress={handleClose}
-            mr="$3">
-            <ButtonText>Cancel</ButtonText>
-          </Button>
-          <Button action="negative" onPress={handleLogout}>
-            <ButtonText>Logout</ButtonText>
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-};
 
 const LogoutButton = ({setOpenLogoutAlertDialog}) => {
   return (
@@ -103,25 +60,92 @@ const LogoutButton = ({setOpenLogoutAlertDialog}) => {
 
 const BarButton = ({icon, text, onPress}) => {
   return (
-    <HStack justifyContent="space-between">
-      <HStack space="lg">
-        <Icon as={icon} size="lg" mt="$1" />
-        <Text size="lg">{text}</Text>
-      </HStack>
-      <Pressable>
+    <Pressable onPress={onPress}>
+      <HStack justifyContent="space-between">
+        <HStack space="lg">
+          <Icon as={icon} size="lg" mt="$1" />
+          <Text size="lg">{text}</Text>
+        </HStack>
+
         <Icon as={ChevronRight} />
-      </Pressable>
-    </HStack>
+      </HStack>
+    </Pressable>
   );
 };
 
-const ButtonGroup = () => {
+const ButtonGroup = ({setName}) => {
+  const [openChangeNameDialog, setOpenChangeNameDialog] = useState(false);
+  const [isNewNameInvalid, setIsNewNameInvalid] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const [newName, setNewName] = useState('');
+
+  const handleChangeText = text => {
+    if (text.length > 20) {
+      setIsNewNameInvalid(true);
+      setNameError('Name must be less than 20 characters.');
+    } else {
+      setIsNewNameInvalid(false);
+    }
+    setNewName(text);
+  };
+
+  const handleChangeName = () => {
+    if (isNewNameInvalid) {
+      return;
+    }
+
+    if (newName === '') {
+      setIsNewNameInvalid(true);
+      setNameError('Name must not be empty.');
+      return;
+    }
+
+    api
+      .patch('/users/update-name', {name: newName})
+      .then(response => {
+        setName(newName);
+        setOpenChangeNameDialog(false);
+      })
+      .catch(e => console.log(e));
+  };
+
   return (
-    <VStack space="xl">
-      <BarButton icon={User} text="Change Name" />
-      <BarButton icon={AsteriskSquare} text="Change Password" />
-      <BarButton icon={Settings} text="Settings" />
-    </VStack>
+    <>
+      <Dialog
+        isOpen={openChangeNameDialog}
+        setIsOpen={setOpenChangeNameDialog}
+        title="Change Name"
+        isNegative={false}
+        confirmButtonText="Update Name"
+        handleConfirm={handleChangeName}>
+        <FormControl size="lg" isInvalid={isNewNameInvalid}>
+          <Input>
+            <InputField
+              placeholder="New Name"
+              onChangeText={t => handleChangeText(t)}
+            />
+          </Input>
+          <FormControlHelper>
+            <FormControlHelperText>
+              Must be less than 20 characters.
+            </FormControlHelperText>
+          </FormControlHelper>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon} />
+            <FormControlErrorText>{nameError}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+      </Dialog>
+      <VStack space="xl">
+        <BarButton
+          icon={User}
+          text="Change Name"
+          onPress={() => setOpenChangeNameDialog(true)}
+        />
+        <BarButton icon={AsteriskSquare} text="Change Password" />
+        <BarButton icon={Settings} text="Settings" />
+      </VStack>
+    </>
   );
 };
 
@@ -139,6 +163,15 @@ const ProfileScreen = ({navigation, isActive}) => {
       })
       .catch(e => console.log(e));
   }, []);
+
+  const handleLogout = () => {
+    AsyncStorage.removeItem('token')
+      .then(() => {
+        setOpenLogoutAlertDialog(false);
+        navigation.replace('WelcomeScreen');
+      })
+      .catch(e => console.log(e));
+  };
 
   return (
     <Box style={{display: isActive ? 'flex' : 'none'}} flex={1}>
@@ -167,15 +200,19 @@ const ProfileScreen = ({navigation, isActive}) => {
         </Center>
 
         <Divider mt="$10" />
-        <ButtonGroup />
+        <ButtonGroup setName={setName} />
         <Divider />
       </VStack>
 
-      <LogoutAlertDialog
-        openLogoutAlertDialog={openLogoutAlertDialog}
-        setOpenLogoutAlertDialog={setOpenLogoutAlertDialog}
-        navigation={navigation}
-      />
+      <Dialog
+        isOpen={openLogoutAlertDialog}
+        setIsOpen={setOpenLogoutAlertDialog}
+        title="Log Out"
+        isNegative={true}
+        confirmButtonText="Log Out"
+        handleConfirm={handleLogout}>
+        <Text>Are you sure to log out?</Text>
+      </Dialog>
 
       <LogoutButton setOpenLogoutAlertDialog={setOpenLogoutAlertDialog} />
     </Box>
