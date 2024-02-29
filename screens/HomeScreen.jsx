@@ -37,9 +37,12 @@ const HomeScreenContent = ({isActive}) => {
   );
 };
 
-const NewPostFab = ({navigation}) => {
+const NewPostFab = ({navigation, isActive}) => {
   return (
-    <Box w="$full" borderRadius="$md">
+    <Box
+      w="$full"
+      borderRadius="$md"
+      style={{display: isActive ? 'flex' : 'none'}}>
       <Fab
         size="lg"
         placement="bottom center"
@@ -62,7 +65,7 @@ const HomeScreen = ({navigation}) => {
           <HomeScreenContent isActive={activeTab === 'Home'} />
         </Box>
 
-        <NewPostFab navigation={navigation} />
+        <NewPostFab navigation={navigation} isActive={activeTab === 'Home'} />
 
         {/* mobile bottom tabs */}
         <Box
