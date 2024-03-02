@@ -72,7 +72,7 @@ const CreatePasswordScreen = ({navigation, route}) => {
             const userInfo = jwtDecode(token);
             AsyncStorage.setItem('token', token);
             AsyncStorage.setItem('user_email', userInfo.email);
-            navigation.navigate('HomeScreen', {token: token});
+            navigation.navigate('SetInitialProfileScreen', {token: token});
             console.log(r.data);
           })
           .catch(e => {

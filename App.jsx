@@ -12,6 +12,7 @@ import CreatePasswordScreen from './screens/signup/CreatePasswordScreen';
 import HomeScreen from './screens/HomeScreen';
 import SplashScreen from './screens/SplashScreen';
 import NewPostScreen from './screens/NewPostScreen';
+import SetInitialProfileScreen from './screens/signup/SetInitialProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,10 @@ function App() {
           <Stack.Screen
             name="CreatePasswordScreen"
             component={CreatePasswordScreen}
+          />
+          <Stack.Screen
+            name="SetInitialProfileScreen"
+            component={SetInitialProfileScreen}
           />
           <Stack.Screen name="NewPostScreen" component={NewPostScreen} />
         </Stack.Navigator>

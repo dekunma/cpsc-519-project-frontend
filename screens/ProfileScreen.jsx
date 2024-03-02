@@ -97,7 +97,7 @@ const ButtonGroup = ({setName}) => {
     }
 
     api
-      .patch('/users/update-name', {name: newName})
+      .patch('/users/update-profile', {name: newName})
       .then(() => {
         setName(newName);
         setOpenChangeNameDialog(false);
