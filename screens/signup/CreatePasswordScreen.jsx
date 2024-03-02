@@ -18,11 +18,7 @@ import {
 } from '@gluestack-ui/themed';
 import React from 'react';
 import api from '../../api';
-import {jwtDecode} from 'jwt-decode';
-import {decode} from 'base-64';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-global.atob = decode;
 
 const CreatePasswordScreen = ({navigation, route}) => {
   const [password, setPassword] = React.useState('');
@@ -69,9 +65,7 @@ const CreatePasswordScreen = ({navigation, route}) => {
           .post('/users/log-in', {email: email, password: password})
           .then(r => {
             const token = r.data.token;
-            const userInfo = jwtDecode(token);
             AsyncStorage.setItem('token', token);
-            AsyncStorage.setItem('user_email', userInfo.email);
             navigation.navigate('SetInitialProfileScreen', {token: token});
             console.log(r.data);
           })

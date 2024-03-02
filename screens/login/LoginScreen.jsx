@@ -14,10 +14,6 @@ import {
 
 import api from '../../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {jwtDecode} from 'jwt-decode';
-import {decode} from 'base-64';
-
-global.atob = decode;
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState('');
@@ -34,10 +30,7 @@ const LoginScreen = ({navigation}) => {
       .then(response => {
         console.log(response.data);
         const token = response.data.token;
-        const userInfo = jwtDecode(token);
         AsyncStorage.setItem('token', token);
-        AsyncStorage.setItem('user_email', userInfo.email);
-        AsyncStorage.setItem('user_name', userInfo.name);
         navigation.navigate('HomeScreen', {token: token});
       })
       .catch(error => {

@@ -32,9 +32,7 @@ import {
   AlertCircleIcon,
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import Dialog from '../components/Dialog';
-
 import api from '../api';
 
 const LogoutButton = ({setOpenLogoutAlertDialog}) => {
@@ -101,7 +99,6 @@ const ButtonGroup = ({setName}) => {
       .then(() => {
         setName(newName);
         setOpenChangeNameDialog(false);
-        AsyncStorage.setItem('user_name', newName);
       })
       .catch(e => console.log(e));
   };
@@ -149,16 +146,18 @@ const ButtonGroup = ({setName}) => {
 const ProfileScreen = ({navigation, isActive}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [avatar, setAvatar] = useState('');
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] =
     React.useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem('user_email')
-      .then(r => setEmail(r))
-      .catch(e => console.log(e));
-
-    AsyncStorage.getItem('user_name')
-      .then(r => setName(r))
+    api
+      .get('/users/profile')
+      .then(response => {
+        setName(response.data.name);
+        setEmail(response.data.email);
+        setAvatar(response.data.avatar);
+      })
       .catch(e => console.log(e));
   }, []);
 
@@ -179,12 +178,7 @@ const ProfileScreen = ({navigation, isActive}) => {
           <Pressable onPress={() => console.log('Avatar pressed')}>
             <Avatar size="2xl" borderRadius="$full">
               <AvatarFallbackText>{name}</AvatarFallbackText>
-              <AvatarImage
-                source={{
-                  uri: 'https://avatar.iran.liara.run/public/2',
-                }}
-                alt={name}
-              />
+              <AvatarImage source={{uri: avatar}} alt={name} />
             </Avatar>
           </Pressable>
 
