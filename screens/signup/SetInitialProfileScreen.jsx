@@ -35,7 +35,7 @@ const SetInitialProfileScreen = ({navigation}) => {
     React.useState(true);
 
   const drawRandomAvatar = () => {
-    const id = Math.floor(Math.random() * 100);
+    const id = 1 + Math.floor(Math.random() * 100);
     setAvatarUrl(`https://avatar.iran.liara.run/public/${id}`);
   };
 
