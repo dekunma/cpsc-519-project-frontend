@@ -146,7 +146,9 @@ const ButtonGroup = ({setName}) => {
 const ProfileScreen = ({navigation, isActive}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [avatar, setAvatar] = useState('');
+  const [avatar, setAvatar] = useState(
+    'https://avatar.iran.liara.run/public/1',
+  );
   const [openLogoutAlertDialog, setOpenLogoutAlertDialog] =
     React.useState(false);
 
