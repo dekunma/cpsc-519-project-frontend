@@ -31,15 +31,11 @@ import {
   AsteriskSquare,
   AlertCircleIcon,
 } from 'lucide-react-native';
-import {jwtDecode} from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {decode} from 'base-64';
 
 import Dialog from '../components/Dialog';
 
 import api from '../api';
-
-global.atob = decode;
 
 const LogoutButton = ({setOpenLogoutAlertDialog}) => {
   return (
@@ -102,9 +98,10 @@ const ButtonGroup = ({setName}) => {
 
     api
       .patch('/users/update-name', {name: newName})
-      .then(response => {
+      .then(() => {
         setName(newName);
         setOpenChangeNameDialog(false);
+        AsyncStorage.setItem('user_name', newName);
       })
       .catch(e => console.log(e));
   };
@@ -156,11 +153,12 @@ const ProfileScreen = ({navigation, isActive}) => {
     React.useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem('token')
-      .then(token => {
-        setEmail(jwtDecode(token).email);
-        setName(jwtDecode(token).name);
-      })
+    AsyncStorage.getItem('user_email')
+      .then(r => setEmail(r))
+      .catch(e => console.log(e));
+
+    AsyncStorage.getItem('user_name')
+      .then(r => setName(r))
       .catch(e => console.log(e));
   }, []);
 
