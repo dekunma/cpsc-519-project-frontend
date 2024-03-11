@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Box, View } from '@gluestack-ui/themed';
-import { Home, User, Users, MapPin } from 'lucide-react-native';
+import React, {useState} from 'react';
+import {Box, View} from '@gluestack-ui/themed';
+import {Home, User, Users, MapPin} from 'lucide-react-native';
 import BottomNavigation from '../components/BottomNavigation';
-import MapView, { Marker } from 'react-native-maps';
-import { useNavigation } from '@react-navigation/native';
-import { StyleSheet} from 'react-native';
+import MapView, {Marker} from 'react-native-maps';
+import {useNavigation} from '@react-navigation/native';
+import {StyleSheet} from 'react-native';
+import ProfileScreen from './ProfileScreen';
 
 const bottomTabs = [
   {
@@ -21,7 +22,8 @@ const bottomTabs = [
   },
 ];
 
-const MapScreenContent = ({ isActive }) => { // TODO: should be refactored later to be reusable by both HomeScreen and PinDetail Screen.
+const MapScreenContent = ({isActive}) => {
+  // TODO: should be refactored later to be reusable by both HomeScreen and PinDetail Screen.
   const navigation = useNavigation(); // TODO: Hook to get access to navigation, later it should fetch the user's location
   const initialRegion = {
     latitude: 37.78825,
@@ -34,15 +36,15 @@ const MapScreenContent = ({ isActive }) => { // TODO: should be refactored later
 
   const [pins, setPins] = useState([
     {
-      coordinate: { latitude: 37.78825, longitude: -122.4324 },
-      title: "Test Pin",
-      description: "This is a test pin",
+      coordinate: {latitude: 37.78825, longitude: -122.4324},
+      title: 'Test Pin',
+      description: 'This is a test pin',
     },
     // Initially includes the example pin, add more dynamically
   ]);
 
   // Function to handle the map press
-  const handleMapPress = (event) => {
+  const handleMapPress = event => {
     if (pinClicked) {
       // Marker was pressed, do not execute map press logic
       pinClicked = false;
@@ -50,14 +52,14 @@ const MapScreenContent = ({ isActive }) => { // TODO: should be refactored later
     }
     navigation.navigate('NewPostScreen', {
       coordinates: event.nativeEvent.coordinate,
-      addPin: (newPin) => {
+      addPin: newPin => {
         setPins(currentPins => [...currentPins, newPin]);
-      }
+      },
     });
   };
 
   // Navigate to a detail screen with pin info
-  const handlePinPress = (pin) => {
+  const handlePinPress = pin => {
     pinClicked = true;
     navigation.navigate('PinDetailScreen', {
       pinDetails: pin,
@@ -65,21 +67,26 @@ const MapScreenContent = ({ isActive }) => { // TODO: should be refactored later
   };
 
   return (
-    <View style={{ display: isActive ? 'flex' : 'none', flex: 1 }}>
+    <View style={{display: isActive ? 'flex' : 'none', flex: 1}}>
       <MapView
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         initialRegion={initialRegion}
         onPress={handleMapPress} // Add the press handler here
-      > 
-        {pins.map((pin, index) => (// TODO: Fetch data from db later
-        <Marker
-          key={index}
-          coordinate={pin.coordinate}
-          title={pin.title}
-          description={pin.description}
-          onPress={() => handlePinPress(pin)}
-        />
-      ))}
+      >
+        {pins.map(
+          (
+            pin,
+            index, // TODO: Fetch data from db later
+          ) => (
+            <Marker
+              key={index}
+              coordinate={pin.coordinate}
+              title={pin.title}
+              description={pin.description}
+              onPress={() => handlePinPress(pin)}
+            />
+          ),
+        )}
       </MapView>
     </View>
   );
@@ -98,15 +105,19 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
-  }
+  },
 });
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   const [activeTab, setActiveTab] = useState('Home');
 
   return (
     <>
       <Box flex={1}>
+        <ProfileScreen
+          isActive={activeTab === 'Profile'}
+          navigation={navigation}
+        />
         <MapScreenContent isActive={activeTab === 'Home'} />
         <Box
           h="$16"
