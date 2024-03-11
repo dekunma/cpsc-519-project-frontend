@@ -10,6 +10,7 @@ import EnterEmailScreen from './screens/signup/EnterEmailScreen';
 import VerificationCodeScreen from './screens/signup/VerificationCodeScreen';
 import CreatePasswordScreen from './screens/signup/CreatePasswordScreen';
 import HomeScreen from './screens/HomeScreen';
+import PinDetailScreen from './screens/PinDetailScreen';
 import SplashScreen from './screens/SplashScreen';
 import NewPostScreen from './screens/NewPostScreen';
 import SetInitialProfileScreen from './screens/signup/SetInitialProfileScreen';
@@ -41,6 +42,7 @@ function App() {
             component={SetInitialProfileScreen}
           />
           <Stack.Screen name="NewPostScreen" component={NewPostScreen} />
+          <Stack.Screen name="PinDetailScreen" component={PinDetailScreen} options={{ title: 'Pin Details' }} />
         </Stack.Navigator>
       </GluestackUIProvider>
     </NavigationContainer>
