@@ -22,7 +22,9 @@ const SelectPhotoScreen = ({route}) => {
         console.log('ImagePicker Error: ', response.error);
       } else {
         const source = {uri: response.assets[0].uri};
-        // TODO: Use this `source` to display the selected photo or to do something else
+        // TODO: do something with the image other than logging
+        console.log('User selected image ', source);
+        navigation.goBack();
       }
     });
   };

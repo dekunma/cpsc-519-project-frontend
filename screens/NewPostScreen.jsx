@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {View, TextInput, Button, Text, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-const NewPostScreen = ({ route }) => {
+const NewPostScreen = ({route}) => {
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const { coordinates, addPin } = route.params;
+  const {coordinates, addPin} = route.params;
 
   const handleAddPin = () => {
     // Logic to add the pin goes here
@@ -18,9 +18,12 @@ const NewPostScreen = ({ route }) => {
       description: description,
     };
 
-    addPin(newPin); 
-//     navigation.goBack(); // Go back after adding the pin
-    navigation.navigate('SelectPhotoScreen', {},)
+    addPin(newPin);
+    navigation.goBack(); // Go back after adding the pin
+  };
+
+  const handleSelectPhoto = () => {
+    navigation.navigate('SelectPhotoScreen', {});
   };
 
   return (
@@ -39,6 +42,7 @@ const NewPostScreen = ({ route }) => {
         onChangeText={setDescription}
         placeholder="Enter description"
       />
+      <Button title="Select Photos" onPress={handleSelectPhoto} />
       <Button title="Add Pin" onPress={handleAddPin} />
       <Button title="Cancel" onPress={() => navigation.goBack()} />
     </View>
@@ -65,4 +69,3 @@ const styles = StyleSheet.create({
 });
 
 export default NewPostScreen;
-
