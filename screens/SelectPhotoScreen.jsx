@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {View, Button} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-const SelectPhotoScreen = ({ route }) => {
-    const { coordinates, addPin } = route.params;
-    const navigation = useNavigation();
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+const SelectPhotoScreen = ({route}) => {
+  const {coordinates, addPin} = route.params;
+  const navigation = useNavigation();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleSelectPhoto = () => {
     const options = {
@@ -15,7 +15,7 @@ const SelectPhotoScreen = ({ route }) => {
       quality: 1,
     };
 
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {

@@ -43,8 +43,15 @@ function App() {
             component={SetInitialProfileScreen}
           />
           <Stack.Screen name="NewPostScreen" component={NewPostScreen} />
-          <Stack.Screen name="SelectPhotoScreen" component={SelectPhotoScreen} />
-          <Stack.Screen name="PinDetailScreen" component={PinDetailScreen} options={{ title: 'Pin Details' }} />
+          <Stack.Screen
+            name="SelectPhotoScreen"
+            component={SelectPhotoScreen}
+          />
+          <Stack.Screen
+            name="PinDetailScreen"
+            component={PinDetailScreen}
+            options={{title: 'Pin Details'}}
+          />
         </Stack.Navigator>
       </GluestackUIProvider>
     </NavigationContainer>
