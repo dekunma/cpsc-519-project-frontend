@@ -14,6 +14,7 @@ import PinDetailScreen from './screens/PinDetailScreen';
 import SplashScreen from './screens/SplashScreen';
 import NewPostScreen from './screens/NewPostScreen';
 import SetInitialProfileScreen from './screens/signup/SetInitialProfileScreen';
+import SelectPhotoScreen from './screens/SelectPhotoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ function App() {
             component={SetInitialProfileScreen}
           />
           <Stack.Screen name="NewPostScreen" component={NewPostScreen} />
+          <Stack.Screen name="SelectPhotoScreen" component={SelectPhotoScreen} />
           <Stack.Screen name="PinDetailScreen" component={PinDetailScreen} options={{ title: 'Pin Details' }} />
         </Stack.Navigator>
       </GluestackUIProvider>

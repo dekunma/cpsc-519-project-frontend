@@ -19,7 +19,8 @@ const NewPostScreen = ({ route }) => {
     };
 
     addPin(newPin); 
-    navigation.goBack(); // Go back after adding the pin
+//     navigation.goBack(); // Go back after adding the pin
+    navigation.navigate('SelectPhotoScreen', {},)
   };
 
   return (
