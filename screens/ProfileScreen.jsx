@@ -30,8 +30,11 @@ import {
   Settings,
   AsteriskSquare,
   AlertCircleIcon,
+  CircleUserRound,
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImagePicker from 'react-native-image-crop-picker';
+
 import Dialog from '../components/Dialog';
 import api from '../api';
 
@@ -67,7 +70,7 @@ const BarButton = ({icon, text, onPress}) => {
   );
 };
 
-const ButtonGroup = ({setName}) => {
+const ButtonGroup = ({setName, setAvatar}) => {
   const [openChangeNameDialog, setOpenChangeNameDialog] = useState(false);
   const [isNewNameInvalid, setIsNewNameInvalid] = useState(false);
   const [nameError, setNameError] = useState('');
@@ -103,6 +106,35 @@ const ButtonGroup = ({setName}) => {
       .catch(e => console.log(e));
   };
 
+  const handleChangeAvatar = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+      cropperCircleOverlay: true,
+    }).then(image => {
+      let formData = new FormData();
+      formData.append('avatar', {
+        uri: image.path,
+        name: image.path.substring(image.path.lastIndexOf('/') + 1),
+        type: image.mime,
+      });
+
+      api
+        .post('/users/upload-avatar', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(r => {
+          setAvatar(r.data.filepath);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    });
+  };
+
   return (
     <>
       <Dialog
@@ -135,6 +167,11 @@ const ButtonGroup = ({setName}) => {
           icon={User}
           text="Change Name"
           onPress={() => setOpenChangeNameDialog(true)}
+        />
+        <BarButton
+          icon={CircleUserRound}
+          text="Change Avatar"
+          onPress={handleChangeAvatar}
         />
         <BarButton icon={AsteriskSquare} text="Change Password" />
         <BarButton icon={Settings} text="Settings" />
@@ -194,7 +231,7 @@ const ProfileScreen = ({navigation, isActive}) => {
         </Center>
 
         <Divider mt="$10" />
-        <ButtonGroup setName={setName} />
+        <ButtonGroup setName={setName} setAvatar={setAvatar} />
         <Divider />
       </VStack>
 
