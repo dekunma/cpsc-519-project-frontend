@@ -6,6 +6,10 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 It might take a few hours to do it, so be patient.
 
 ## Start Development
+### 0. [For Windows only] Setup workaround for ninja
+Follow [this instruction](https://github.com/ninja-build/ninja/issues/1900#issuecomment-1817532728) to setup a workaround for ninja. \
+Please make sure to download ninja from the **artifacts** of the GitHub Actions build, not from the **releases**.
+
 ### 1. Create .env file
 Create a file named `.env` in the root directory of the project and add the content in [this google doc](https://docs.google.com/document/d/1b8g1Iau7TJo6f2scI5bhIGdKSBgu8lu7Kp8v8QPR0Uc/edit) \
 Please request access to the document if you are a developer of the project. 

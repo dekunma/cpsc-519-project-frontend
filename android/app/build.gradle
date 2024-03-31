@@ -83,6 +83,11 @@ android {
         versionName "1.0"
         manifestPlaceholders = [GOOGLE_MAPS_API_KEY: "$System.env.GOOGLE_MAPS_API_KEY"]
         resValue "string", "build_config_package", "com.cpsc519frontend"
+        externalNativeBuild {
+            cmake {
+                arguments "-DCMAKE_MAKE_PROGRAM=C:\\ninja\\ninja.exe", "-DCMAKE_OBJECT_PATH_MAX=1024"
+            }
+        }
     }
     signingConfigs {
         debug {
