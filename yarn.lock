@@ -7064,6 +7064,11 @@ react-native-confirmation-code-field@^7.3.2:
   resolved "https://registry.yarnpkg.com/react-native-confirmation-code-field/-/react-native-confirmation-code-field-7.4.0.tgz#58cc2d5adad59882d1805bf164cd6099d432d21e"
   integrity sha512-Kw7rD0RXi6vZnt0Y67nkSW2wYmZFdnxJ23yxkKm3jqwvSxAvaA1NP3h3MHSPmJd25l0WK/+fjXOeCliDqWZ9rw==
 
+react-native-image-crop-picker@^0.40.3:
+  version "0.40.3"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.40.3.tgz#a6b135cd1218a33ad126c1a148ec5a1bd01737ff"
+  integrity sha512-45PKcTnsnLS+E36YwoXutllQdRSOuOsMN0IRcAcwsFXOuAQIOtugXlAuGGL28JHKb/ATaSSPvqCSrdG65Jv3GA==
+
 react-native-image-picker@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-7.1.2.tgz#383849d1953caf4578874a1f5e5dd11c737bd5cd"

@@ -25,6 +25,10 @@ function App() {
     <NavigationContainer>
       <GluestackUIProvider config={config}>
         <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen
+            name="SetInitialProfileScreen"
+            component={SetInitialProfileScreen}
+          />
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
@@ -38,10 +42,7 @@ function App() {
             name="CreatePasswordScreen"
             component={CreatePasswordScreen}
           />
-          <Stack.Screen
-            name="SetInitialProfileScreen"
-            component={SetInitialProfileScreen}
-          />
+
           <Stack.Screen name="NewPostScreen" component={NewPostScreen} />
           <Stack.Screen
             name="SelectPhotoScreen"
