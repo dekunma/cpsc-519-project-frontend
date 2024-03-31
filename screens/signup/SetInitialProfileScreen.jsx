@@ -91,9 +91,6 @@ const SetInitialProfileScreen = ({navigation}) => {
         type: image.mime,
       });
 
-      console.log(formData);
-      console.log(image);
-
       api
         .post('/users/upload-avatar', formData, {
           headers: {
@@ -101,7 +98,7 @@ const SetInitialProfileScreen = ({navigation}) => {
           },
         })
         .then(r => {
-          setAvatarUrl(image.path);
+          setAvatarUrl(r.data.filepath);
         })
         .catch(e => {
           console.log(e);
