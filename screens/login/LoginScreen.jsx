@@ -5,15 +5,20 @@ import {
   ButtonText,
   Center,
   FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
   FormControlLabel,
   FormControlLabelText,
   Heading,
   Input,
   InputField,
+  Spinner,
 } from '@gluestack-ui/themed';
 
 import api from '../../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AlertCircleIcon} from 'lucide-react-native';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState('');
@@ -21,12 +26,16 @@ const LoginScreen = ({navigation}) => {
   const [isLoginButtonDisabled, setIsLoginButtonDisabled] =
     React.useState(false);
 
+  const [isLoginInvalid, setIsLoginInvalid] = React.useState(false);
+  const [loginInvalidText, setLoginInvalidText] = React.useState('');
+
   const login = () => {
     const LOGIN_ROUTE = '/users/log-in';
     setIsLoginButtonDisabled(true);
+    setIsLoginInvalid(false);
 
     api
-      .post(LOGIN_ROUTE, {email, password})
+      .post(LOGIN_ROUTE, {email: email.trim(), password: password.trim()})
       .then(response => {
         console.log(response.data);
         const token = response.data.token;
@@ -34,6 +43,9 @@ const LoginScreen = ({navigation}) => {
         navigation.navigate('HomeScreen', {token: token});
       })
       .catch(error => {
+        setIsLoginInvalid(true);
+        const errorMessage = error.response.data.message;
+        setLoginInvalidText(errorMessage);
         console.log(error);
       })
       .finally(() => {
@@ -48,14 +60,7 @@ const LoginScreen = ({navigation}) => {
           Enter Your Details
         </Heading>
         <Box w="$full" mb="$10" p="$4">
-          <FormControl
-            w="$full"
-            size="lg"
-            mb="$6"
-            isDisabled={false}
-            isInvalid={false}
-            isReadOnly={false}
-            isRequired={false}>
+          <FormControl w="$full" size="lg" mb="$6">
             <FormControlLabel mb="$1">
               <FormControlLabelText>Email</FormControlLabelText>
             </FormControlLabel>
@@ -67,13 +72,7 @@ const LoginScreen = ({navigation}) => {
               />
             </Input>
           </FormControl>
-          <FormControl
-            w="$full"
-            size="lg"
-            isDisabled={false}
-            isInvalid={false}
-            isReadOnly={false}
-            isRequired={false}>
+          <FormControl w="$full" size="lg" isInvalid={isLoginInvalid}>
             <FormControlLabel mb="$1">
               <FormControlLabelText>Password</FormControlLabelText>
             </FormControlLabel>
@@ -84,6 +83,10 @@ const LoginScreen = ({navigation}) => {
                 placeholder="Password"
               />
             </Input>
+            <FormControlError>
+              <FormControlErrorIcon as={AlertCircleIcon} />
+              <FormControlErrorText>{loginInvalidText}</FormControlErrorText>
+            </FormControlError>
           </FormControl>
         </Box>
         <Box>
@@ -93,9 +96,13 @@ const LoginScreen = ({navigation}) => {
             mb="$1"
             onPress={() => login()}
             isDisabled={isLoginButtonDisabled}>
-            <ButtonText w="$full" textAlign="center">
-              SIGN IN
-            </ButtonText>
+            {isLoginButtonDisabled ? (
+              <Spinner w="$full" textAlign="center" />
+            ) : (
+              <ButtonText w="$full" textAlign="center">
+                SIGN IN
+              </ButtonText>
+            )}
           </Button>
           <Button size="lg" w="$full" variant="link">
             <ButtonText w="$full" textAlign="center">
