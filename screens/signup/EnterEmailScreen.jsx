@@ -14,6 +14,7 @@ import {
   Heading,
   Input,
   InputField,
+  Spinner,
   Text,
 } from '@gluestack-ui/themed';
 
@@ -35,6 +36,7 @@ const EnterEmailScreen = ({navigation}) => {
   }, [email]);
 
   const handlePressButton = () => {
+    setIsEmailInvalid(false);
     if (!email.endsWith('@yale.edu')) {
       setIsEmailInvalid(true);
       setEmailInvalidText('Please use your yale.edu email.');
@@ -51,6 +53,9 @@ const EnterEmailScreen = ({navigation}) => {
       })
       .catch(e => {
         console.log(e);
+        const errorMessage = e.response.data.message;
+        setIsEmailInvalid(true);
+        setEmailInvalidText(errorMessage);
       })
       .finally(() => {
         setIsButtonDisabled(false);
@@ -92,9 +97,13 @@ const EnterEmailScreen = ({navigation}) => {
             w="$full"
             onPress={handlePressButton}
             isDisabled={isButtonDisabled}>
-            <ButtonText w="$full" textAlign="center">
-              SEND CODE
-            </ButtonText>
+            {isButtonDisabled ? (
+              <Spinner w="$full" textAlign="center" />
+            ) : (
+              <ButtonText w="$full" textAlign="center">
+                SEND CODE
+              </ButtonText>
+            )}
           </Button>
         </Box>
       </Center>

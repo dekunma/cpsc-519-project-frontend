@@ -66,6 +66,7 @@ const SetInitialProfileScreen = ({navigation}) => {
   };
 
   const handlePressComplete = () => {
+    setIsCompleteButtonDisabled(true);
     api
       .patch('/users/update-profile', {name: name, avatar: avatarUrl})
       .then(() => {
@@ -73,6 +74,9 @@ const SetInitialProfileScreen = ({navigation}) => {
       })
       .catch(e => {
         console.log(e);
+      })
+      .finally(() => {
+        setIsCompleteButtonDisabled(false);
       });
   };
 
@@ -175,9 +179,13 @@ const SetInitialProfileScreen = ({navigation}) => {
             w="$full"
             onPress={handlePressComplete}
             isDisabled={isCompleteButtonDisabled || isNameInvalid}>
-            <ButtonText w="$full" textAlign="center">
-              COMPLETE
-            </ButtonText>
+            {isCompleteButtonDisabled && isNameInvalid ? (
+              <Spinner w="$full" textAlign="center" />
+            ) : (
+              <ButtonText w="$full" textAlign="center">
+                COMPLETE
+              </ButtonText>
+            )}
           </Button>
         </Box>
       </Center>

@@ -4,6 +4,7 @@ import {
   ButtonText,
   Center,
   Heading,
+  Spinner,
   Text,
 } from '@gluestack-ui/themed';
 import React, {useState} from 'react';
@@ -89,18 +90,22 @@ const VerificationCodeScreen = ({navigation, route}) => {
               navigation.navigate('CreatePasswordScreen', {code: value})
             }
             isDisabled={isContinueButtonDisabled}>
-            <ButtonText
-              w="$full"
-              textAlign="center"
-              onPress={handlePressContinue}>
-              CONTINUE
-            </ButtonText>
+            {isContinueButtonDisabled ? (
+              <Spinner w="$full" textAlign="center" />
+            ) : (
+              <ButtonText
+                w="$full"
+                textAlign="center"
+                onPress={handlePressContinue}>
+                CONTINUE
+              </ButtonText>
+            )}
           </Button>
-          <Button size="lg" w="$full" variant="link">
+          {/* <Button size="lg" w="$full" variant="link">
             <ButtonText w="$full" textAlign="center">
               RESEND CODE
             </ButtonText>
-          </Button>
+          </Button> */}
         </Box>
       </Center>
     </>

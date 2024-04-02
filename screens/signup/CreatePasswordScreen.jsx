@@ -15,6 +15,7 @@ import {
   Heading,
   Input,
   InputField,
+  Spinner,
 } from '@gluestack-ui/themed';
 import React from 'react';
 import api from '../../api';
@@ -137,9 +138,13 @@ const CreatePasswordScreen = ({navigation, route}) => {
           mb="$1"
           onPress={() => signup()}
           isDisabled={isLoginButtonDisabled}>
-          <ButtonText w="$full" textAlign="center">
-            SIGN IN
-          </ButtonText>
+          {isLoginButtonDisabled ? (
+            <Spinner w="$full" textAlign="center" />
+          ) : (
+            <ButtonText w="$full" textAlign="center">
+              SIGN IN
+            </ButtonText>
+          )}
         </Button>
       </Center>
     </>
