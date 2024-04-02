@@ -2,81 +2,81 @@ import React from 'react';
 import {
   Box,
   Heading,
-  Text,
   VStack,
-  HStack,
-  Avatar,
-  AvatarFallbackText,
-  AvatarImage,
   Actionsheet,
   ActionsheetDragIndicatorWrapper,
   ActionsheetDragIndicator,
   ActionsheetScrollView,
   ActionsheetBackdrop,
   ActionsheetContent,
+  Button,
+  ButtonText,
+  ButtonIcon,
+  InputField,
+  Input,
+  InputIcon,
+  InputSlot,
 } from '@gluestack-ui/themed';
+import {SearchIcon, UserRoundPlusIcon} from 'lucide-react-native';
+import FriendListItem from '../components/FriendListItem';
 
 const mockFriends = [
   {
     id: 1,
     name: 'Ronald Richards',
-    role: 'Nursing Assistant',
+    email: 'test@test.test',
     avatarUri:
       'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
   {
     id: 2,
     name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
+    email: 'test@test.test',
+
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
   {
     id: 3,
     name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
+    email: 'test@test.test',
+
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
   {
     id: 4,
     name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
+    email: 'test@test.test',
+
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
   {
     id: 5,
     name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
+    email: 'test@test.test',
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
   {
     id: 6,
     name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
+    email: 'test@test.test',
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
   {
     id: 7,
     name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
+    email: 'test@test.test',
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
   {
     id: 8,
     name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
-    avatarUri:
-      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-  },
-  {
-    id: 9,
-    name: 'Arlene McCoy',
-    role: 'Marketing Coordinator',
+    email: 'test@test.test',
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
@@ -86,33 +86,79 @@ const mockFriends = [
 const FriendsList = () => {
   return (
     <Box w="100%">
-      <Heading>Friends List</Heading>
       <VStack space="2xl">
         {mockFriends.map(friend => (
-          <HStack key={friend.id} space="md">
-            <Avatar>
-              <AvatarFallbackText>SS</AvatarFallbackText>
-              <AvatarImage
-                source={{
-                  uri: friend.avatarUri,
-                }}
-                alt="avatar"
-              />
-            </Avatar>
-            <VStack>
-              <Heading size="sm">{friend.name}</Heading>
-              <Text size="sm">{friend.role}</Text>
-            </VStack>
-          </HStack>
+          <FriendListItem
+            key={friend.id}
+            avatarUri={friend.avatarUri}
+            name={friend.name}
+            email={friend.email}
+          />
         ))}
       </VStack>
     </Box>
   );
 };
 
+const AddFriendScreen = ({setAddingFriend}) => {
+  const [email, setEmail] = React.useState('');
+  const [isSearchButtonDisabled, setIsSearchButtonDisabled] =
+    React.useState(false);
+
+  const onEmailChange = e => {
+    setEmail(e.trim());
+  };
+
+  return (
+    <Box>
+      <Input variant="outline" size="lg">
+        <InputSlot>
+          <InputIcon as={SearchIcon} ml="$2" />
+        </InputSlot>
+        <InputField placeholder="Email" onChangeText={onEmailChange} />
+      </Input>
+
+      <Button
+        size="lg"
+        variant="solid"
+        action="primary"
+        mt="$4"
+        onPress={() => {}}
+        isDisabled={isSearchButtonDisabled || email === ''}>
+        <ButtonText>Search by Email</ButtonText>
+      </Button>
+
+      <Button
+        size="lg"
+        variant="link"
+        action="negative"
+        mt="$2"
+        onPress={() => setAddingFriend(false)}>
+        <ButtonText>Cancel</ButtonText>
+      </Button>
+
+      <Box mt="$8">
+        <FriendListItem
+          key={1}
+          avatarUri={mockFriends[0].avatarUri}
+          name={mockFriends[0].name}
+          email={mockFriends[0].email}
+          withButton={true}
+        />
+      </Box>
+    </Box>
+  );
+};
+
 const FriendsScreen = ({actionsheetVisible, setActionsheetVisible}) => {
+  const [addingFriend, setAddingFriend] = React.useState(false);
+
   const handleClose = () => {
     setActionsheetVisible(false);
+  };
+
+  const handleClickAddFriend = () => {
+    setAddingFriend(true);
   };
 
   return (
@@ -133,7 +179,27 @@ const FriendsScreen = ({actionsheetVisible, setActionsheetVisible}) => {
           </ActionsheetDragIndicatorWrapper>
           <ActionsheetScrollView>
             <Box w="100%">
-              <FriendsList />
+              <Heading mt="$2" textAlign="center" mb="$2" size="xl">
+                Friends
+              </Heading>
+
+              {addingFriend ? null : (
+                <Button
+                  size="lg"
+                  variant="solid"
+                  action="primary"
+                  mb="$4"
+                  onPress={handleClickAddFriend}>
+                  <ButtonIcon as={UserRoundPlusIcon} />
+                  <ButtonText> Add Friends </ButtonText>
+                </Button>
+              )}
+
+              {addingFriend ? (
+                <AddFriendScreen setAddingFriend={setAddingFriend} />
+              ) : (
+                <FriendsList />
+              )}
             </Box>
           </ActionsheetScrollView>
         </Box>
