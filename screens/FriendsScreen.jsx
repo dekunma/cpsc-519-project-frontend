@@ -17,10 +17,35 @@ import {
   InputIcon,
   InputSlot,
 } from '@gluestack-ui/themed';
-import {SearchIcon, UserRoundPlusIcon} from 'lucide-react-native';
+import {SearchIcon, UserRoundPlusIcon, ContactIcon} from 'lucide-react-native';
 import FriendListItem from '../components/FriendListItem';
 
 const mockFriends = [
+  {
+    id: 1,
+    name: 'Ronald Richards',
+    email: 'test@test.test',
+    avatarUri:
+      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
+  },
+  {
+    id: 2,
+    name: 'Arlene McCoy',
+    email: 'test@test.test',
+    avatarUri:
+      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
+  },
+  {
+    id: 3,
+    name: 'Arlene McCoy',
+    email: 'test@test.test',
+    avatarUri:
+      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
+  },
+  // Add more friends as needed
+];
+
+const mockFriendRequests = [
   {
     id: 1,
     name: 'Ronald Richards',
@@ -36,51 +61,7 @@ const mockFriends = [
     avatarUri:
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
   },
-  {
-    id: 3,
-    name: 'Arlene McCoy',
-    email: 'test@test.test',
-
-    avatarUri:
-      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-  },
-  {
-    id: 4,
-    name: 'Arlene McCoy',
-    email: 'test@test.test',
-
-    avatarUri:
-      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-  },
-  {
-    id: 5,
-    name: 'Arlene McCoy',
-    email: 'test@test.test',
-    avatarUri:
-      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-  },
-  {
-    id: 6,
-    name: 'Arlene McCoy',
-    email: 'test@test.test',
-    avatarUri:
-      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-  },
-  {
-    id: 7,
-    name: 'Arlene McCoy',
-    email: 'test@test.test',
-    avatarUri:
-      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-  },
-  {
-    id: 8,
-    name: 'Arlene McCoy',
-    email: 'test@test.test',
-    avatarUri:
-      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-  },
-  // Add more friends as needed
+  // Add more mock requests as needed
 ];
 
 const FriendsList = () => {
@@ -90,6 +71,7 @@ const FriendsList = () => {
         {mockFriends.map(friend => (
           <FriendListItem
             key={friend.id}
+            id={friend.id}
             avatarUri={friend.avatarUri}
             name={friend.name}
             email={friend.email}
@@ -150,8 +132,67 @@ const AddFriendScreen = ({setAddingFriend}) => {
   );
 };
 
+const FriendRequestScreen = ({setCheckFriendRequest}) => {
+  const handleAccept = id => {
+    console.log('Accepted Request:', id);
+    // Implement logic to accept friend request
+  };
+
+  const handleDismiss = id => {
+    console.log('Dismissed Request:', id);
+    // Implement logic to dismiss friend request
+  };
+
+  return (
+    <Box w="100%">
+      <Button
+        size="lg"
+        variant="link"
+        action="negative"
+        mt="$2"
+        onPress={() => setCheckFriendRequest(false)}>
+        <ButtonText>Cancel</ButtonText>
+      </Button>
+
+      <VStack space="2xl">
+        {mockFriendRequests.map(request => (
+          <Box
+            key={request.id}
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            p="$2">
+            <FriendListItem
+              id={request.id}
+              avatarUri={request.avatarUri}
+              name={request.name}
+              email={request.email}
+            />
+            <Box flexDirection="row">
+              <Button
+                size="sm"
+                variant="solid"
+                onPress={() => handleAccept(request.id)}>
+                <ButtonText>Accept</ButtonText>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                mr="$2"
+                onPress={() => handleDismiss(request.id)}>
+                <ButtonText>Dismiss</ButtonText>
+              </Button>
+            </Box>
+          </Box>
+        ))}
+      </VStack>
+    </Box>
+  );
+};
+
 const FriendsScreen = ({actionsheetVisible, setActionsheetVisible}) => {
   const [addingFriend, setAddingFriend] = React.useState(false);
+  const [checkFriendRequest, setCheckFriendRequest] = React.useState(false);
 
   const handleClose = () => {
     setActionsheetVisible(false);
@@ -159,6 +200,10 @@ const FriendsScreen = ({actionsheetVisible, setActionsheetVisible}) => {
 
   const handleClickAddFriend = () => {
     setAddingFriend(true);
+  };
+
+  const handleClickedCheckFriendRequest = () => {
+    setCheckFriendRequest(true);
   };
 
   return (
@@ -183,23 +228,42 @@ const FriendsScreen = ({actionsheetVisible, setActionsheetVisible}) => {
                 Friends
               </Heading>
 
-              {addingFriend ? null : (
-                <Button
-                  size="lg"
-                  variant="solid"
-                  action="primary"
-                  mb="$4"
-                  onPress={handleClickAddFriend}>
-                  <ButtonIcon as={UserRoundPlusIcon} />
-                  <ButtonText> Add Friends </ButtonText>
-                </Button>
-              )}
-
               {addingFriend ? (
                 <AddFriendScreen setAddingFriend={setAddingFriend} />
               ) : (
-                <FriendsList />
+                !checkFriendRequest && ( // don't show the button when checking friend request
+                  <Button
+                    size="lg"
+                    variant="solid"
+                    action="primary"
+                    mb="$4"
+                    onPress={handleClickAddFriend}>
+                    <ButtonIcon as={UserRoundPlusIcon} />
+                    <ButtonText> Add Friends </ButtonText>
+                  </Button>
+                )
               )}
+
+              {checkFriendRequest ? (
+                <FriendRequestScreen
+                  setCheckFriendRequest={setCheckFriendRequest}
+                />
+              ) : (
+                !addingFriend && ( // don't show the button when adding friend
+                  <Button
+                    size="lg"
+                    variant="solid"
+                    action="primary"
+                    mb="$4"
+                    onPress={handleClickedCheckFriendRequest}>
+                    <ButtonIcon as={ContactIcon} />
+                    <ButtonText> Friend Requests </ButtonText>
+                  </Button>
+                )
+              )}
+
+              {/* when not adding friend or check friend request, show the friend list */}
+              {!addingFriend && !checkFriendRequest ? <FriendsList /> : null}
             </Box>
           </ActionsheetScrollView>
         </Box>
