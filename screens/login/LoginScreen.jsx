@@ -40,7 +40,7 @@ const LoginScreen = ({navigation}) => {
         console.log(response.data);
         const token = response.data.token;
         AsyncStorage.setItem('token', token);
-        navigation.navigate('HomeScreen', {token: token});
+        navigation.navigate('SplashScreen', {token: token});
       })
       .catch(error => {
         setIsLoginInvalid(true);

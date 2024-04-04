@@ -1,6 +1,7 @@
 import {Heading, View} from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect} from 'react';
+import {request, PERMISSIONS} from 'react-native-permissions';
 
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
@@ -8,7 +9,13 @@ const SplashScreen = ({navigation}) => {
       if (!token) {
         navigation.replace('WelcomeScreen');
       } else {
-        navigation.replace('HomeScreen');
+        request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+          .then(result => {
+            console.log('location permission request result: ', result);
+          })
+          .finally(() => {
+            navigation.replace('HomeScreen');
+          });
       }
     });
   }, [navigation]);

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, View} from '@gluestack-ui/themed';
-import {Home, User, Users, MapPin} from 'lucide-react-native';
+import {Home, User, Users} from 'lucide-react-native';
 import BottomNavigation from '../components/BottomNavigation';
 import MapView, {Marker} from 'react-native-maps';
 import {useNavigation} from '@react-navigation/native';
@@ -25,18 +25,20 @@ const bottomTabs = [
 const MapScreenContent = ({isActive}) => {
   // TODO: should be refactored later to be reusable by both HomeScreen and PinDetail Screen.
   const navigation = useNavigation(); // TODO: Hook to get access to navigation, later it should fetch the user's location
+
+  // Yale University's coordinates
   const initialRegion = {
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitude: 41.3123521,
+    longitude: -72.9231735,
+    latitudeDelta: 0.00922,
+    longitudeDelta: 0.0221,
   };
 
   var pinClicked = false;
 
   const [pins, setPins] = useState([
     {
-      coordinate: {latitude: 37.78825, longitude: -122.4324},
+      coordinate: {latitude: 41.3123521, longitude: -72.9231735},
       title: 'Test Pin',
       description: 'This is a test pin',
     },
@@ -72,7 +74,9 @@ const MapScreenContent = ({isActive}) => {
         style={{flex: 1}}
         initialRegion={initialRegion}
         onPress={handleMapPress} // Add the press handler here
-      >
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+        provider={MapView.PROVIDER_GOOGLE}>
         {pins.map(
           (
             pin,
