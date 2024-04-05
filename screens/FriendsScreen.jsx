@@ -16,9 +16,25 @@ import {
   Input,
   InputIcon,
   InputSlot,
+  Center,
+  Icon,
+  Text,
+  Spinner,
 } from '@gluestack-ui/themed';
-import {SearchIcon, UserRoundPlusIcon, ContactIcon} from 'lucide-react-native';
+import {
+  SearchIcon,
+  UserRoundPlusIcon,
+  ContactIcon,
+  ConstructionIcon,
+} from 'lucide-react-native';
 import FriendListItem from '../components/FriendListItem';
+import api from '../api';
+
+import {jwtDecode} from 'jwt-decode';
+import {decode} from 'base-64';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+global.atob = decode;
 
 const mockFriends = [
   {
@@ -87,8 +103,52 @@ const AddFriendScreen = ({setAddingFriend}) => {
   const [isSearchButtonDisabled, setIsSearchButtonDisabled] =
     React.useState(false);
 
+  const [userData, setUserData] = React.useState({});
+  const [noResult, setNoResult] = React.useState(false);
+  const [friendshipButtonText, setFriendshipButtonText] = React.useState('Add');
+
   const onEmailChange = e => {
     setEmail(e.trim());
+  };
+
+  const handleSearchPress = () => {
+    setIsSearchButtonDisabled(true);
+    api
+      .get(`/friendships/email/${email}`)
+      .then(response => {
+        console.log(response.data);
+        setUserData(response.data.user);
+        let requestStatus = response.data.request_status;
+        if (requestStatus === 'unsent') {
+          requestStatus = 'Add';
+        }
+        setFriendshipButtonText(requestStatus);
+        setNoResult(false);
+      })
+      .catch(() => {
+        setNoResult(true);
+        setUserData({});
+      })
+      .finally(() => {
+        setIsSearchButtonDisabled(false);
+      });
+  };
+
+  const handlePressAdd = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    const userEmail = decodedToken.email;
+    console.log(userEmail);
+
+    api
+      .post('/friendships/friend-invitations', {
+        user_email: userEmail,
+        friend_email: email,
+      })
+      .then(response => {
+        console.log(response.data);
+        setFriendshipButtonText('sent');
+      });
   };
 
   return (
@@ -105,9 +165,13 @@ const AddFriendScreen = ({setAddingFriend}) => {
         variant="solid"
         action="primary"
         mt="$4"
-        onPress={() => {}}
+        onPress={handleSearchPress}
         isDisabled={isSearchButtonDisabled || email === ''}>
-        <ButtonText>Search by Email</ButtonText>
+        {isSearchButtonDisabled ? (
+          <Spinner w="$full" textAlign="center" />
+        ) : (
+          <ButtonText>Search by Email</ButtonText>
+        )}
       </Button>
 
       <Button
@@ -120,13 +184,24 @@ const AddFriendScreen = ({setAddingFriend}) => {
       </Button>
 
       <Box mt="$8">
-        <FriendListItem
-          key={1}
-          avatarUri={mockFriends[0].avatarUri}
-          name={mockFriends[0].name}
-          email={mockFriends[0].email}
-          withButton={true}
-        />
+        {userData.id && (
+          <FriendListItem
+            key={1}
+            avatarUri={userData.avatar}
+            name={userData.name}
+            email={userData.email}
+            withButton={true}
+            addButtonText={friendshipButtonText}
+            handlePressAdd={handlePressAdd}
+          />
+        )}
+
+        {noResult && (
+          <Center>
+            <Icon as={ConstructionIcon} size="xl" />
+            <Text>No user with this email</Text>
+          </Center>
+        )}
       </Box>
     </Box>
   );

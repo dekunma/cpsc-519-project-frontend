@@ -16,15 +16,18 @@ import {
 } from '@gluestack-ui/themed';
 import {Check} from 'lucide-react-native';
 
-const FriendListItem = ({key, avatarUri, name, email, withButton}) => {
-  const [addButtonDisabled, setAddButtonDisabled] = React.useState(false);
-
-  const handleClickAdd = () => {
-    setAddButtonDisabled(true);
-    setTimeout(() => {
-      setAddButtonDisabled(false);
-    }, 2000);
-  };
+const FriendListItem = ({
+  key,
+  avatarUri,
+  name,
+  email,
+  withButton,
+  addButtonText,
+  handlePressAdd,
+}) => {
+  const addButtonDisabled = ['sent', 'accepted', 'yourself'].includes(
+    addButtonText,
+  );
 
   return (
     <Pressable>
@@ -54,8 +57,12 @@ const FriendListItem = ({key, avatarUri, name, email, withButton}) => {
             action="primary"
             w="$1/3"
             isDisabled={addButtonDisabled}
-            onPress={handleClickAdd}>
-            <ButtonText>{addButtonDisabled ? 'Sent' : 'Add'} </ButtonText>
+            onPress={handlePressAdd}>
+            <ButtonText>
+              {addButtonText.charAt(0).toUpperCase() +
+                addButtonText.slice(1) +
+                ' '}
+            </ButtonText>
             <ButtonIcon as={addButtonDisabled ? Check : AddIcon} />
           </Button>
         )}
