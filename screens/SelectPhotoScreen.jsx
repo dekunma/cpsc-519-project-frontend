@@ -3,6 +3,7 @@ import {View, Button} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 
+// DEPRECATED
 const SelectPhotoScreen = ({route}) => {
   const {coordinates, addPin} = route.params;
   const navigation = useNavigation();

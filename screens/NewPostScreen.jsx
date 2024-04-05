@@ -1,17 +1,68 @@
 import React, {useState} from 'react';
 import {View, TextInput, Button, Text, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {launchImageLibrary} from "react-native-image-picker";
+import api from "../api";
 
 const NewPostScreen = ({route}) => {
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const {coordinates, addPin} = route.params;
+  const [imagesToUpload, setImagesToUpload] = useState([]);
+
+  const uploadImages = (postId) => {
+    // upload images
+    imagesToUpload.forEach((image) => {
+      let uploadImageFormData = new FormData();
+      uploadImageFormData.append('image', {
+        uri: image.uri,
+        name: image.fileName,
+        type: image.type,
+      });
+      uploadImageFormData.append('post_id', postId); // TODO: change placeholder
+      console.debug("uploading image " + image.uri);
+      api
+        .post('/posts/upload-post-image', uploadImageFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(r => {
+          console.log("Successfully uploaded image. ");
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    });
+  }
 
   const handleAddPin = () => {
-    // Logic to add the pin goes here
-    console.log('Pin added:', title, description, coordinates);
+    // Add a new post for this pin
+    let newPostRequest = {
+      title: title,
+      content: description,
+    };
 
+    let postId = null;
+    let jsonString = JSON.stringify(newPostRequest)
+    console.debug("create-post request JSON: " + jsonString)
+    console.log('Adding pin:', title, description, coordinates);
+    api
+      .post('/posts/create-post', jsonString, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      })
+      .then(r => {
+        // TODO: get the value for "post_id" from the response JSON and update post_id
+        postId = r.data['post_id'];
+        uploadImages(postId);
+        console.log("Successfully added new post. Post ID = " + postId);
+      })
+      .catch(e => {
+        console.error(e);
+      });
     const newPin = {
       coordinate: coordinates,
       title: title,
@@ -19,11 +70,29 @@ const NewPostScreen = ({route}) => {
     };
 
     addPin(newPin);
+
+
     navigation.goBack(); // Go back after adding the pin
   };
 
   const handleSelectPhoto = () => {
-    navigation.navigate('SelectPhotoScreen', {});
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+    };
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        // const source = {uri: response.assets[0].uri};
+        // TODO: do something with the image other than logging
+        imagesToUpload.push(response.assets[0])
+        console.log('Images to upload: ', imagesToUpload[0]);
+        console.debug("imagesToUpload : " + imagesToUpload.toString());
+      }
+    });
   };
 
   return (
