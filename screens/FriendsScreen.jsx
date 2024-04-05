@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Box,
   Heading,
@@ -26,6 +26,7 @@ import {
   UserRoundPlusIcon,
   ContactIcon,
   ConstructionIcon,
+  InfinityIcon,
 } from 'lucide-react-native';
 import FriendListItem from '../components/FriendListItem';
 import api from '../api';
@@ -81,14 +82,38 @@ const mockFriendRequests = [
 ];
 
 const FriendsList = () => {
+  const [friendsData, setFriendsData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  useEffect(() => {
+    api
+      .get('/friendships/all-friends')
+      .then(response => {
+        setFriendsData(response.data.friends);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <Box w="100%">
-      <VStack space="2xl">
-        {mockFriends.map(friend => (
+      <VStack space="2xl" mt="$4">
+        {friendsData.length === 0 && (
+          <Center>
+            <Icon as={loading ? InfinityIcon : ConstructionIcon} size="xl" />
+            <Text>{loading ? 'loading...' : 'No friends yet'}</Text>
+          </Center>
+        )}
+
+        {friendsData.map(friend => (
           <FriendListItem
             key={friend.id}
             id={friend.id}
-            avatarUri={friend.avatarUri}
+            avatarUri={friend.avatar}
             name={friend.name}
             email={friend.email}
           />
@@ -298,7 +323,7 @@ const FriendsScreen = ({actionsheetVisible, setActionsheetVisible}) => {
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>
           <ActionsheetScrollView>
-            <Box w="100%">
+            <Box w="100%" px="$4">
               <Heading mt="$2" textAlign="center" mb="$2" size="xl">
                 Friends
               </Heading>
