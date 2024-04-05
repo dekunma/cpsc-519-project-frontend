@@ -41,6 +41,7 @@ const MapScreenContent = ({isActive}) => {
       coordinate: {latitude: 41.3123521, longitude: -72.9231735},
       title: 'Test Pin',
       description: 'This is a test pin',
+      postId: -43,
     },
     // Initially includes the example pin, add more dynamically
   ]);
@@ -87,6 +88,7 @@ const MapScreenContent = ({isActive}) => {
               coordinate={pin.coordinate}
               title={pin.title}
               description={pin.description}
+              postId={pin.postId}
               onPress={() => handlePinPress(pin)}
             />
           ),
@@ -122,7 +124,7 @@ const HomeScreen = ({navigation}) => {
           isActive={activeTab === 'Profile'}
           navigation={navigation}
         />
-        <MapScreenContent isActive={activeTab === 'Home'} />
+        <MapScreenContent isActive={activeTab === 'Home'}/>
         <Box
           h="$16"
           alignItems="center"

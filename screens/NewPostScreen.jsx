@@ -37,7 +37,7 @@ const NewPostScreen = ({route}) => {
     });
   }
 
-  const handleAddPin = () => {
+  const handleAddPin = async () => {
     // Add a new post for this pin
     let newPostRequest = {
       title: title,
@@ -48,27 +48,30 @@ const NewPostScreen = ({route}) => {
     let jsonString = JSON.stringify(newPostRequest)
     console.debug("create-post request JSON: " + jsonString)
     console.log('Adding pin:', title, description, coordinates);
-    api
-      .post('/posts/create-post', jsonString, {
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      })
-      .then(r => {
-        // TODO: get the value for "post_id" from the response JSON and update post_id
-        postId = r.data['post_id'];
-        uploadImages(postId);
-        console.log("Successfully added new post. Post ID = " + postId);
-      })
-      .catch(e => {
-        console.error(e);
-      });
+    try {
+      const response = await api
+        .post('/posts/create-post', jsonString, {
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+        });
+
+      postId = response.data['post_id'];
+      uploadImages(postId);
+      console.log("Successfully added new post. Post ID = " + postId);
+
+    } catch (e) {
+      console.error(e);
+    }
+
     const newPin = {
       coordinate: coordinates,
       title: title,
       description: description,
+      postId: postId,
     };
 
+    console.debug("newPin post id: " + newPin.postId)
     addPin(newPin);
 
 
@@ -111,9 +114,9 @@ const NewPostScreen = ({route}) => {
         onChangeText={setDescription}
         placeholder="Enter description"
       />
-      <Button title="Select Photos" onPress={handleSelectPhoto} />
-      <Button title="Add Pin" onPress={handleAddPin} />
-      <Button title="Cancel" onPress={() => navigation.goBack()} />
+      <Button title="Select Photos" onPress={handleSelectPhoto}/>
+      <Button title="Add Pin" onPress={handleAddPin}/>
+      <Button title="Cancel" onPress={() => navigation.goBack()}/>
     </View>
   );
 };
