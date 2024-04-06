@@ -27,7 +27,7 @@ const WelcomeScreen = ({navigation}) => {
 
           <Box alignItems="center">
             <Heading size="xl" color="$primary500">
-              APP NAME TBD
+              PinPalS
             </Heading>
             <Text color="$secondary300" textAlign="center">
               Some Secondary text to put here to introduce our app
