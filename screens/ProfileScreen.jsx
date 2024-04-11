@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 
 import {
-  HStack,
   Text,
   Heading,
   Avatar,
   VStack,
-  Icon,
   Pressable,
   AvatarImage,
   AvatarFallbackText,
@@ -25,7 +23,6 @@ import {
   FormControlErrorText,
 } from '@gluestack-ui/themed';
 import {
-  ChevronRight,
   User,
   Settings,
   AsteriskSquare,
@@ -37,6 +34,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import Dialog from '../components/Dialog';
 import api from '../api';
+import BarButton from '../components/BarButton';
 
 const LogoutButton = ({setOpenLogoutAlertDialog}) => {
   return (
@@ -52,21 +50,6 @@ const LogoutButton = ({setOpenLogoutAlertDialog}) => {
         </Button>
       </Box>
     </Center>
-  );
-};
-
-const BarButton = ({icon, text, onPress}) => {
-  return (
-    <Pressable onPress={onPress}>
-      <HStack justifyContent="space-between">
-        <HStack space="lg">
-          <Icon as={icon} size="lg" mt="$1" />
-          <Text size="lg">{text}</Text>
-        </HStack>
-
-        <Icon as={ChevronRight} />
-      </HStack>
-    </Pressable>
   );
 };
 
