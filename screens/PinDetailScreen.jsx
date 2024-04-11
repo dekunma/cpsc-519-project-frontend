@@ -38,7 +38,6 @@ const PinDetailScreen = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{pinDetails.title}</Text>
       <Text style={styles.description}>{pinDetails.description}</Text>
       <Text style={styles.postId}>{pinDetails.postId}</Text>
       {/* Displaying latitude and longitude */}
@@ -64,11 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
+
   description: {
     fontSize: 16,
     marginBottom: 10,

@@ -23,6 +23,15 @@ const bottomTabs = [
   },
 ];
 
+class Pin {
+  constructor(coordinate, title, description, postId) {
+    this.coordinate = coordinate;
+    this.title = title;
+    this.description = description;
+    this.postId = postId;
+  }
+}
+
 const MapScreenContent = ({isActive}) => {
   // TODO: should be refactored later to be reusable by both HomeScreen and PinDetail Screen.
   const navigation = useNavigation(); // TODO: Hook to get access to navigation, later it should fetch the user's location
@@ -47,6 +56,8 @@ const MapScreenContent = ({isActive}) => {
     // Initially includes the example pin, add more dynamically
   ]);
 
+  const [currentCenter, setCurrentCenter] = useState(initialRegion);
+
   // Function to handle the map press
   const handleMapPress = event => {
     if (pinClicked) {
@@ -69,6 +80,10 @@ const MapScreenContent = ({isActive}) => {
     navigation.navigate('PinDetailScreen', {
       pinDetails: pin,
     });
+  };
+
+  const addPin = newPin => {
+    setPins(currentPins => [...currentPins, newPin]);
   };
 
   const handleSelectPhoto = coordinates => {
@@ -102,7 +117,8 @@ const MapScreenContent = ({isActive}) => {
         onPress={handleMapPress} // Add the press handler here
         showsUserLocation={true}
         showsMyLocationButton={true}
-        provider={MapView.PROVIDER_GOOGLE}>
+        provider={MapView.PROVIDER_GOOGLE}
+        onRegionChangeComplete={region => setCurrentCenter(region)}>
         {pins.map(
           (
             pin,
@@ -111,7 +127,6 @@ const MapScreenContent = ({isActive}) => {
             <Marker
               key={index}
               coordinate={pin.coordinate}
-              title={pin.title}
               description={pin.description}
               postId={pin.postId}
               onPress={() => handlePinPress(pin)}
