@@ -27,6 +27,7 @@ import {
   ContactIcon,
   ConstructionIcon,
   InfinityIcon,
+  ArrowLeftIcon,
 } from 'lucide-react-native';
 import FriendListItem from '../components/FriendListItem';
 import api from '../api';
@@ -202,10 +203,9 @@ const AddFriendScreen = ({setAddingFriend}) => {
       <Button
         size="lg"
         variant="link"
-        action="negative"
         mt="$2"
         onPress={() => setAddingFriend(false)}>
-        <ButtonText>Cancel</ButtonText>
+        <ButtonText>Back</ButtonText>
       </Button>
 
       <Box mt="$8">
@@ -245,16 +245,12 @@ const FriendRequestScreen = ({setCheckFriendRequest}) => {
 
   return (
     <Box w="100%">
-      <Button
-        size="lg"
-        variant="link"
-        action="negative"
-        mt="$2"
-        onPress={() => setCheckFriendRequest(false)}>
-        <ButtonText>Cancel</ButtonText>
+      <Button size="lg" mt="$2" onPress={() => setCheckFriendRequest(false)}>
+        <ButtonIcon as={ArrowLeftIcon} />
+        <ButtonText> Back</ButtonText>
       </Button>
 
-      <VStack space="2xl">
+      <VStack space="2xl" mt="$4">
         {mockFriendRequests.map(request => (
           <Box
             key={request.id}
