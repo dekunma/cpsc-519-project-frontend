@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Button, StyleSheet, FlatList} from 'react-native';
-import { Image } from "@gluestack-ui/themed"
+import {Image} from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
-import api from "../api";
+import api from '../api';
 
 const PinDetailScreen = ({route}) => {
   // Extracting pin details passed as navigation parameter
@@ -10,29 +10,31 @@ const PinDetailScreen = ({route}) => {
   const navigation = useNavigation();
   const [images, setImages] = useState([]);
 
-  console.debug("pinDetails = " + JSON.stringify(pinDetails))
+  console.debug('pinDetails = ' + JSON.stringify(pinDetails));
   useEffect(() => {
-    api.get(`/posts/get-post-images?post_id=${pinDetails.postId}`)
+    api
+      .get(`/posts/get-post-images?post_id=${pinDetails.postId}`)
       .then(response => {
-        console.debug("response.data['images'].length = " + response.data['images'].length);
-        if (response.data['images'].length > 0) {
-          const newImages = response.data['images'].map(image => image['file_path']);
+        console.debug(
+          "response.data['images'].length = " + response.data.images.length,
+        );
+        if (response.data.images.length > 0) {
+          const newImages = response.data.images.map(image => image.file_path);
           setImages(newImages); // update the state
-          console.debug("images stored: " + JSON.stringify(images));
+          console.debug('images stored: ' + JSON.stringify(images));
         }
-        console.log("Response from get post images: " + JSON.stringify(response.data));
+        console.log(
+          'Response from get post images: ' + JSON.stringify(response.data),
+        );
       })
       .catch(e => console.log(e));
   }, [pinDetails.postId]);
 
-  const renderItem = ({ item }) => {
-    console.log("Rendering item with URL:", item); // Log the URL
+  const renderItem = ({item}) => {
+    console.log('Rendering item with URL:', item); // Log the URL
 
-    return (
-      <Image source={{ uri: item }} />
-    );
+    return <Image source={{uri: item}} />;
   };
-
 
   return (
     <View style={styles.container}>
@@ -50,7 +52,7 @@ const PinDetailScreen = ({route}) => {
         numColumns={2}
         contentContainerStyle={styles.imageList}
       />
-      <Button title="go back" onPress={() => navigation.goBack()}/>
+      <Button title="go back" onPress={() => navigation.goBack()} />
     </View>
   );
 };
