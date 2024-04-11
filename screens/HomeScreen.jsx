@@ -186,6 +186,18 @@ const HomeScreen = ({navigation}) => {
           isActive={activeTab === 'Profile'}
           navigation={navigation}
         />
+
+        <Fab
+          size="lg"
+          placement="top center"
+          bg="$error400"
+          display={
+            activeTab === 'Home' && isNewPostBottonPressed ? 'flex' : 'none'
+          }
+          onPress={cancelAddPin}>
+          <FabIcon as={X} />
+        </Fab>
+
         <MapScreenContent
           isActive={activeTab === 'Home'}
           initialRegion={initialRegion}
@@ -215,19 +227,6 @@ const HomeScreen = ({navigation}) => {
                 icon={UploadIcon}
                 bg="$emerald500"
               />
-
-              <Box
-                w="$full"
-                borderRadius="$md"
-                style={{display: activeTab === 'Home' ? 'flex' : 'none'}}>
-                <Fab
-                  size="lg"
-                  placement="bottom right"
-                  bg="$error400"
-                  onPress={cancelAddPin}>
-                  <FabIcon as={X} />
-                </Fab>
-              </Box>
             </>
           )}
 
