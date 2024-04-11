@@ -6,6 +6,7 @@ import MapView, {Marker} from 'react-native-maps';
 import {useNavigation} from '@react-navigation/native';
 import {StyleSheet} from 'react-native';
 import ProfileScreen from './ProfileScreen';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const bottomTabs = [
   {
@@ -53,12 +54,13 @@ const MapScreenContent = ({isActive}) => {
       pinClicked = false;
       return;
     }
-    navigation.navigate('NewPostScreen', {
-      coordinates: event.nativeEvent.coordinate,
-      addPin: newPin => {
-        setPins(currentPins => [...currentPins, newPin]);
-      },
-    });
+    // navigation.navigate('NewPostScreen', {
+    //   coordinates: event.nativeEvent.coordinate,
+    //   addPin: newPin => {
+    //     setPins(currentPins => [...currentPins, newPin]);
+    //   },
+    // });
+    handleSelectPhoto(event.nativeEvent.coordinate);
   };
 
   // Navigate to a detail screen with pin info
@@ -66,6 +68,29 @@ const MapScreenContent = ({isActive}) => {
     pinClicked = true;
     navigation.navigate('PinDetailScreen', {
       pinDetails: pin,
+    });
+  };
+
+  const handleSelectPhoto = coordinates => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      selectionLimit: 9,
+    };
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        navigation.navigate('NewPostScreen', {
+          coordinates,
+          addPin: newPin => {
+            setPins(currentPins => [...currentPins, newPin]);
+          },
+          images: response.assets,
+        });
+      }
     });
   };
 
@@ -124,7 +149,7 @@ const HomeScreen = ({navigation}) => {
           isActive={activeTab === 'Profile'}
           navigation={navigation}
         />
-        <MapScreenContent isActive={activeTab === 'Home'}/>
+        <MapScreenContent isActive={activeTab === 'Home'} />
         <Box
           h="$16"
           alignItems="center"

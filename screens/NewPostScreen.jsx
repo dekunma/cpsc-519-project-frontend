@@ -1,140 +1,89 @@
-import React, {useState} from 'react';
-import {View, TextInput, Button, Text, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {launchImageLibrary} from 'react-native-image-picker';
-import api from '../api';
+import React, {useEffect, useState} from 'react';
 
-const NewPostScreen = ({route}) => {
-  const navigation = useNavigation();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const {coordinates, addPin} = route.params;
+import {
+  View,
+  HStack,
+  Icon,
+  Button,
+  ButtonText,
+  Pressable,
+  Textarea,
+  TextareaInput,
+  Box,
+  Image,
+  VStack,
+  Divider,
+} from '@gluestack-ui/themed';
+import {ArrowLeftIcon} from 'lucide-react-native';
+import BarButton from '../components/BarButton';
+import {User} from 'lucide-react-native';
+
+const NewPostScreen = ({navigation, route}) => {
+  const {coordinates, addPin, images} = route.params;
   const [imagesToUpload, setImagesToUpload] = useState([]);
 
-  const uploadImages = postId => {
-    // upload images
-    imagesToUpload.forEach(image => {
-      let uploadImageFormData = new FormData();
-      uploadImageFormData.append('image', {
-        uri: image.uri,
-        name: image.fileName,
-        type: image.type,
-      });
-      uploadImageFormData.append('post_id', postId); // TODO: change placeholder
-      console.debug('uploading image ' + image.uri);
-      api
-        .post('/posts/upload-post-image', uploadImageFormData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(r => {
-          console.log('Successfully uploaded image. ');
-        })
-        .catch(e => {
-          console.error(e);
-        });
-    });
-  };
+  useEffect(() => {
+    const chunkArrBySize = (arr, size) =>
+      Array.from({length: Math.ceil(arr.length / size)}, (_, i) =>
+        arr.slice(i * size, i * size + size),
+      );
 
-  const handleAddPin = async () => {
-    // Add a new post for this pin
-    let newPostRequest = {
-      title: title,
-      content: description,
-    };
-
-    let postId = null;
-    let jsonString = JSON.stringify(newPostRequest);
-    console.debug('create-post request JSON: ' + jsonString);
-    console.log('Adding pin:', title, description, coordinates);
-    try {
-      const response = await api.post('/posts/create-post', jsonString, {
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      });
-
-      postId = response.data.post_id;
-      uploadImages(postId);
-      console.log('Successfully added new post. Post ID = ' + postId);
-    } catch (e) {
-      console.error(e);
-    }
-
-    const newPin = {
-      coordinate: coordinates,
-      title: title,
-      description: description,
-      postId: postId,
-    };
-
-    console.debug('newPin post id: ' + newPin.postId);
-    addPin(newPin);
-
-    navigation.goBack(); // Go back after adding the pin
-  };
-
-  const handleSelectPhoto = () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 1,
-    };
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        // const source = {uri: response.assets[0].uri};
-        // TODO: do something with the image other than logging
-        imagesToUpload.push(response.assets[0]);
-        console.log('Images to upload: ', imagesToUpload[0]);
-        console.debug('imagesToUpload : ' + imagesToUpload.toString());
-      }
-    });
-  };
+    const chunked = chunkArrBySize(images, 3);
+    setImagesToUpload(chunked);
+    console.log('imagesToUpload', chunked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Title</Text>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        placeholder="Enter title"
-      />
-      <Text style={styles.label}>Description</Text>
-      <TextInput
-        style={styles.input}
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Enter description"
-      />
-      <Button title="Select Photos" onPress={handleSelectPhoto} />
-      <Button title="Add Pin" onPress={handleAddPin} />
-      <Button title="Cancel" onPress={() => navigation.goBack()} />
+    <View py="$4" px="$6">
+      {/* Header */}
+      <HStack justifyContent="space-between" alignItems="center">
+        <Pressable onPress={() => navigation.goBack()}>
+          <Icon as={ArrowLeftIcon} size="xl" />
+        </Pressable>
+        <Button>
+          <ButtonText>Post</ButtonText>
+        </Button>
+      </HStack>
+
+      <Textarea mt="$8" mx="$1" justifyContent="center" w="$full">
+        <TextareaInput placeholder="Say something..." />
+      </Textarea>
+
+      <Box mt="$4">
+        {imagesToUpload.length !== 0
+          ? imagesToUpload.map(imageGroup => (
+              <HStack mt="$4" h="$32" space="xs">
+                {imageGroup.map(image => (
+                  <Box h="$full" w="$1/3">
+                    <Image
+                      source={{
+                        uri: image.uri,
+                      }}
+                      alt="image"
+                      key={image.filename}
+                      h="$full"
+                      w="$full"
+                    />
+                  </Box>
+                ))}
+              </HStack>
+            ))
+          : null}
+      </Box>
+
+      <VStack space="xl" mt="$8">
+        <Divider />
+        <BarButton
+          icon={User}
+          text="Visible To"
+          onPress={() => console.log('To be implemented')}
+          secondaryText="Everyone"
+        />
+        <Divider />
+      </VStack>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginBottom: 16,
-  },
-});
 
 export default NewPostScreen;
