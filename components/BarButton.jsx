@@ -1,10 +1,16 @@
 import React from 'react';
-import {HStack, Icon, Text, Pressable, Box} from '@gluestack-ui/themed';
+import {HStack, Icon, Text, Pressable} from '@gluestack-ui/themed';
 import {ChevronRight} from 'lucide-react-native';
 
-const BarButton = ({icon, text, onPress, secondaryText = ''}) => {
+const BarButton = ({
+  icon,
+  text,
+  onPress,
+  secondaryText = '',
+  isDisabled = false,
+}) => {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={isDisabled ? undefined : onPress}>
       <HStack justifyContent="space-between" alignItems="center">
         <HStack space="lg">
           <Icon as={icon} size="lg" mt="$1" />

@@ -27,7 +27,7 @@ const PinDetailScreen = ({route}) => {
           'Response from get post images: ' + JSON.stringify(response.data),
         );
       })
-      .catch(e => console.log(e));
+      .catch(e => console.log(e.response.data));
   }, [pinDetails.postId]);
 
   const renderItem = ({item}) => {
