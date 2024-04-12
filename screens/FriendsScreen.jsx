@@ -211,7 +211,7 @@ const AddFriendScreen = ({setAddingFriend}) => {
       <Box mt="$8">
         {userData.id && (
           <FriendListItem
-            key={1}
+            id={userData.id}
             avatarUri={userData.avatar}
             name={userData.name}
             email={userData.email}

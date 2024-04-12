@@ -17,7 +17,7 @@ import {
 import {Check} from 'lucide-react-native';
 
 const FriendListItem = ({
-  key,
+  id,
   avatarUri,
   name,
   email,
@@ -32,7 +32,7 @@ const FriendListItem = ({
   return (
     <Pressable>
       <HStack
-        key={key}
+        key={id}
         space="md"
         justifyContent={withButton ? 'space-around' : 'none'}
         alignItems="center">
