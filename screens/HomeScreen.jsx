@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Box, Fab, FabIcon, FabLabel, View, AddIcon} from '@gluestack-ui/themed';
 import {Home, User, Users} from 'lucide-react-native';
 import BottomNavigation from '../components/BottomNavigation';
@@ -8,6 +8,9 @@ import ProfileScreen from './ProfileScreen';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {UploadIcon, X} from 'lucide-react-native';
 import api from '../api';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Config from 'react-native-config';
+const {GOOGLE_MAPS_API_KEY} = Config;
 
 const bottomTabs = [
   {
@@ -75,11 +78,12 @@ const MapScreenContent = ({
     <View style={{display: isActive ? 'flex' : 'none', flex: 1}}>
       <MapView
         style={{flex: 1}}
-        initialRegion={initialRegion}
+        region={initialRegion}
         showsUserLocation={true}
         showsMyLocationButton={true}
         provider={MapView.PROVIDER_GOOGLE}
-        onRegionChangeComplete={region => setCurrentCenter(region)}>
+        onRegionChangeComplete={region => setCurrentCenter(region)}
+        mapPadding={{top: 80}}>
         {pins.map(
           (
             pin,
@@ -114,8 +118,9 @@ const HomeScreen = ({navigation}) => {
   const [activeTab, setActiveTab] = useState('Home');
   const [currentCenter, setCurrentCenter] = useState(initialRegion);
   const [pins, setPins] = useState([]);
-
   const [isNewPostBottonPressed, setIsNewPostButtonPressed] = useState(false);
+
+  const googlePlacesAutocompleteRef = useRef(null);
 
   useEffect(() => {
     // Fetch pins from the database
@@ -187,6 +192,7 @@ const HomeScreen = ({navigation}) => {
           navigation={navigation}
         />
 
+        {/* Cancel add pin button */}
         <Fab
           size="lg"
           placement="top center"
@@ -194,13 +200,53 @@ const HomeScreen = ({navigation}) => {
           display={
             activeTab === 'Home' && isNewPostBottonPressed ? 'flex' : 'none'
           }
+          position="absolute"
+          top={80}
+          w="$16"
+          h="$16"
           onPress={cancelAddPin}>
           <FabIcon as={X} />
         </Fab>
 
+        <Box alignItems="center">
+          {activeTab === 'Home' && (
+            <GooglePlacesAutocomplete
+              ref={googlePlacesAutocompleteRef}
+              placeholder="Search a place..."
+              fetchDetails={true}
+              onPress={(_, details = null) => {
+                // 'details' is provided when fetchDetails = true
+                console.log(details.geometry);
+                setCurrentCenter({
+                  latitude: details.geometry.location.lat,
+                  longitude: details.geometry.location.lng,
+                  latitudeDelta: 0.00922,
+                  longitudeDelta: 0.0221,
+                });
+
+                setTimeout(() => {
+                  googlePlacesAutocompleteRef.current.clear();
+                }, 2000);
+              }}
+              query={{
+                key: GOOGLE_MAPS_API_KEY,
+                language: 'en',
+              }}
+              styles={{
+                container: {
+                  position: 'absolute',
+                  top: 20,
+                  width: '90%',
+                  zIndex: 9999,
+                },
+              }}
+              enablePoweredByContainer={false}
+            />
+          )}
+        </Box>
         <MapScreenContent
           isActive={activeTab === 'Home'}
-          initialRegion={initialRegion}
+          initialRegion={currentCenter}
           setCurrentCenter={setCurrentCenter}
           pins={pins}
         />
