@@ -82,7 +82,6 @@ const MapScreenContent = ({
         showsUserLocation={true}
         showsMyLocationButton={true}
         provider={MapView.PROVIDER_GOOGLE}
-        onRegionChangeComplete={region => setCurrentCenter(region)}
         mapPadding={{top: 80}}>
         {pins.map(
           (
