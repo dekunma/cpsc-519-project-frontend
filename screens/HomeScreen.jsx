@@ -60,7 +60,7 @@ const BottomFab = ({
 
 const MapScreenContent = ({
   isActive,
-  initialRegion,
+  currentCenter,
   setCurrentCenter,
   pins,
 }) => {
@@ -78,28 +78,28 @@ const MapScreenContent = ({
     <View style={{display: isActive ? 'flex' : 'none', flex: 1}}>
       <MapView
         style={{flex: 1}}
-        region={initialRegion}
+        region={currentCenter}
         showsUserLocation={true}
         showsMyLocationButton={true}
         provider={MapView.PROVIDER_GOOGLE}
+        onRegionChangeComplete={(region, isGesture) => {
+          if (isGesture.isGesture) {
+            setCurrentCenter(region);
+          }
+        }}
         mapPadding={{top: 80}}>
-        {pins.map(
-          (
-            pin,
-            index, // TODO: Fetch data from db later
-          ) => (
-            <Marker
-              key={index}
-              coordinate={pin.coordinate}
-              description={pin.description}
-              postId={pin.postId}
-              onPress={() => handlePinPress(pin)}
-              pinColor={pin.color}
-              draggable={pin.draggable}
-              onDragEnd={pin.onDragEnd}
-            />
-          ),
-        )}
+        {pins.map((pin, index) => (
+          <Marker
+            key={index}
+            coordinate={pin.coordinate}
+            description={pin.description}
+            postId={pin.postId}
+            onPress={() => handlePinPress(pin)}
+            pinColor={pin.color}
+            draggable={pin.draggable}
+            onDragEnd={pin.onDragEnd}
+          />
+        ))}
       </MapView>
     </View>
   );
@@ -120,6 +120,9 @@ const HomeScreen = ({navigation}) => {
   const [isNewPostBottonPressed, setIsNewPostButtonPressed] = useState(false);
 
   const googlePlacesAutocompleteRef = useRef(null);
+
+  const DEFAULT_LATITUDE_DELTA = 0.00922;
+  const DEFAULT_LONGITUDE_DELTA = 0.0221;
 
   useEffect(() => {
     // Fetch pins from the database
@@ -146,12 +149,19 @@ const HomeScreen = ({navigation}) => {
   const addPinAtCenter = () => {
     const newPin = new Pin(
       currentCenter,
-      'This is a test pin',
+      'Temp place holder for adding a new post.',
       -43,
       '#0077E6',
       true,
       e => {
-        setCurrentCenter(e.nativeEvent.coordinate);
+        console.log(e.nativeEvent.coordinate);
+        const {latitude, longitude} = e.nativeEvent.coordinate;
+        setCurrentCenter({
+          latitude,
+          longitude,
+          latitudeDelta: DEFAULT_LATITUDE_DELTA,
+          longitudeDelta: DEFAULT_LONGITUDE_DELTA,
+        });
       },
     ); // #0077E6 = $primary500
     setPins(currentPins => [...currentPins, newPin]);
@@ -215,12 +225,11 @@ const HomeScreen = ({navigation}) => {
               fetchDetails={true}
               onPress={(_, details = null) => {
                 // 'details' is provided when fetchDetails = true
-                console.log(details.geometry);
                 setCurrentCenter({
                   latitude: details.geometry.location.lat,
                   longitude: details.geometry.location.lng,
-                  latitudeDelta: 0.00922,
-                  longitudeDelta: 0.0221,
+                  latitudeDelta: DEFAULT_LATITUDE_DELTA,
+                  longitudeDelta: DEFAULT_LONGITUDE_DELTA,
                 });
 
                 setTimeout(() => {
@@ -245,7 +254,7 @@ const HomeScreen = ({navigation}) => {
         </Box>
         <MapScreenContent
           isActive={activeTab === 'Home'}
-          initialRegion={currentCenter}
+          currentCenter={currentCenter}
           setCurrentCenter={setCurrentCenter}
           pins={pins}
         />
