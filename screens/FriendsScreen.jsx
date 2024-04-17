@@ -232,59 +232,111 @@ const AddFriendScreen = ({setAddingFriend}) => {
   );
 };
 
-const FriendRequestScreen = ({setCheckFriendRequest}) => {
+const FriendRequestScreen = ({ setCheckFriendRequest }) => {
+  const [friendRequests, setFriendRequests] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  useEffect(() => {
+    fetchFriendRequests();
+  }, []);
+
+  const fetchFriendRequests = () => {
+    setIsLoading(true);
+    api.get('/friendships/friend-requests')
+      .then(response => {
+        setFriendRequests(response.data.friendRequests);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching friend requests:', error);
+        setIsLoading(false);
+      });
+  };
+
   const handleAccept = id => {
-    console.log('Accepted Request:', id);
-    // Implement logic to accept friend request
+    console.log(id)
+    api.post(`/friendships/accept-friend-request`, 
+      {
+        friend_id: id,
+      })
+      .then(() => {
+        fetchFriendRequests();
+      })
+      .catch(error => {
+        console.error('Error accepting friend request:', error);
+      });
   };
 
   const handleDismiss = id => {
-    console.log('Dismissed Request:', id);
-    // Implement logic to dismiss friend request
+    console.log(id)
+    api.post(`/friendships/dismiss-friend-request`, 
+      {
+        friend_id: id,
+      })
+      .then(() => {
+        fetchFriendRequests();
+      })
+      .catch(error => {
+        console.error('Error dismissing friend request:', error);
+      });
   };
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <Box w="100%">
-      <Button size="lg" mt="$2" onPress={() => setCheckFriendRequest(false)}>
-        <ButtonIcon as={ArrowLeftIcon} />
-        <ButtonText> Back</ButtonText>
+      <Button
+        size="lg"
+        variant="link"
+        action="negative"
+        mt="$2"
+        onPress={() => setCheckFriendRequest(false)}>
+        <ButtonText>Cancel</ButtonText>
       </Button>
 
-      <VStack space="2xl" mt="$4">
-        {mockFriendRequests.map(request => (
-          <Box
-            key={request.id}
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-            p="$2">
-            <FriendListItem
-              id={request.id}
-              avatarUri={request.avatarUri}
-              name={request.name}
-              email={request.email}
-            />
-            <Box flexDirection="row">
-              <Button
-                size="sm"
-                variant="solid"
-                onPress={() => handleAccept(request.id)}>
-                <ButtonText>Accept</ButtonText>
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                mr="$2"
-                onPress={() => handleDismiss(request.id)}>
-                <ButtonText>Dismiss</ButtonText>
-              </Button>
+      {friendRequests.length === 0 ? (
+        <Text>No friend requests</Text>
+      ) : (
+        <VStack space="2xl">
+          {friendRequests.map(request => (
+            <Box
+              key={request.id}
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+              p="$2">
+              <FriendListItem
+                id={request.id}
+                avatarUri={request.avatarUri}
+                name={request.name}
+                email={request.email}
+              />
+              <Box flexDirection="row">
+                <Button
+                  size="sm"
+                  variant="solid"
+                  onPress={() => handleAccept(request.id)}>
+                  <ButtonText>Accept</ButtonText>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  mr="$2"
+                  onPress={() => handleDismiss(request.id)}>
+                  <ButtonText>Dismiss</ButtonText>
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        ))}
-      </VStack>
+          ))}
+        </VStack>
+      )}
     </Box>
   );
 };
+
+
 
 const FriendsScreen = ({actionsheetVisible, setActionsheetVisible}) => {
   const [addingFriend, setAddingFriend] = React.useState(false);

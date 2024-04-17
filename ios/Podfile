@@ -68,12 +68,12 @@ target 'cpsc519frontend' do
 end
 
 # https://github.com/zoontek/react-native-permissions
-platform :ios, min_ios_version_supported
-prepare_react_native_project!
+# platform :ios, min_ios_version_supported
+# prepare_react_native_project!
 
 # ⬇️ uncomment wanted permissions
 setup_permissions([
-  # 'AppTrackingTransparency',
+  'AppTrackingTransparency',
   # 'Bluetooth',
   # 'Calendars',
   # 'CalendarsWriteOnly',
