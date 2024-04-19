@@ -24,7 +24,6 @@ import {
 } from '@gluestack-ui/themed';
 import {
   User,
-  Settings,
   AsteriskSquare,
   AlertCircleIcon,
   CircleUserRound,
@@ -55,6 +54,12 @@ const LogoutButton = ({setOpenLogoutAlertDialog}) => {
 
 const ButtonGroup = ({setName, setAvatar}) => {
   const [openChangeNameDialog, setOpenChangeNameDialog] = useState(false);
+  const [openChangePasswordDialog, setOpenChangePasswordDialog] =
+    useState(false);
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [passwordInvalidText, setPasswordInvalidText] = useState('');
   const [isNewNameInvalid, setIsNewNameInvalid] = useState(false);
   const [nameError, setNameError] = useState('');
   const [newName, setNewName] = useState('');
@@ -118,8 +123,75 @@ const ButtonGroup = ({setName, setAvatar}) => {
     });
   };
 
+  const validatePassword = () => {
+    if (newPassword.length < 8) {
+      setIsPasswordInvalid(true);
+      setPasswordInvalidText('Password must be at least 8 characters.');
+      return false;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setIsPasswordInvalid(true);
+      setPasswordInvalidText('The two passwords you entered do not match.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleChangePassword = () => {
+    setIsPasswordInvalid(false);
+
+    if (!validatePassword()) {
+      return;
+    }
+
+    api
+      .patch('/users/change-password', {new_password: newPassword})
+      .then(() => {
+        setOpenChangePasswordDialog(false);
+      })
+      .catch(e => console.log(e));
+  };
+
   return (
     <>
+      <Dialog
+        isOpen={openChangePasswordDialog}
+        setIsOpen={setOpenChangePasswordDialog}
+        title="Change Password"
+        isNegative={false}
+        confirmButtonText="Update Password"
+        handleConfirm={handleChangePassword}>
+        <FormControl w="$full" size="lg" mb="$4" isInvalid={isPasswordInvalid}>
+          <Input>
+            <InputField
+              onChangeText={e => setNewPassword(e)}
+              type="password"
+              placeholder="New Password"
+            />
+          </Input>
+        </FormControl>
+        <FormControl w="$full" size="lg" isInvalid={isPasswordInvalid}>
+          <Input>
+            <InputField
+              onChangeText={e => setConfirmNewPassword(e)}
+              type="password"
+              placeholder="Confirm New Password"
+            />
+          </Input>
+          <FormControlHelper>
+            <FormControlHelperText>
+              New password must have at least 8 characters.
+            </FormControlHelperText>
+          </FormControlHelper>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon} />
+            <FormControlErrorText>{passwordInvalidText}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+      </Dialog>
+
       <Dialog
         isOpen={openChangeNameDialog}
         setIsOpen={setOpenChangeNameDialog}
@@ -145,19 +217,26 @@ const ButtonGroup = ({setName, setAvatar}) => {
           </FormControlError>
         </FormControl>
       </Dialog>
+
       <VStack space="xl">
         <BarButton
           icon={User}
           text="Change Name"
           onPress={() => setOpenChangeNameDialog(true)}
         />
+        <Divider />
         <BarButton
           icon={CircleUserRound}
           text="Change Avatar"
           onPress={handleChangeAvatar}
         />
-        <BarButton icon={AsteriskSquare} text="Change Password" />
-        <BarButton icon={Settings} text="Settings" />
+        <Divider />
+        <BarButton
+          icon={AsteriskSquare}
+          text="Change Password"
+          onPress={() => setOpenChangePasswordDialog(true)}
+        />
+        {/* <BarButton icon={Settings} text="Settings" /> */}
       </VStack>
     </>
   );
