@@ -97,7 +97,7 @@ const EnterEmailScreen = ({navigation}) => {
             w="$full"
             onPress={handlePressButton}
             isDisabled={isButtonDisabled}>
-            {isButtonDisabled ? (
+            {isButtonDisabled && email.length > 0 ? (
               <Spinner w="$full" textAlign="center" />
             ) : (
               <ButtonText w="$full" textAlign="center">
