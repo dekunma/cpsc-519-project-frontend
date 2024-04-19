@@ -232,6 +232,24 @@ const HomeScreen = ({navigation}) => {
                   longitudeDelta: DEFAULT_LONGITUDE_DELTA,
                 });
 
+                const locationIndicatorPin = new Pin(
+                  {
+                    latitude: details.geometry.location.lat,
+                    longitude: details.geometry.location.lng,
+                  },
+                  details.formatted_address,
+                  -1,
+                  '#0077E6', // #0077E6 = $primary500
+                  false,
+                  null,
+                );
+
+                setPins(currentPins => {
+                  const newPins = currentPins.filter(pin => pin.postId !== -1);
+                  newPins.push(locationIndicatorPin);
+                  return newPins;
+                });
+
                 setTimeout(() => {
                   googlePlacesAutocompleteRef.current.clear();
                 }, 2000);
