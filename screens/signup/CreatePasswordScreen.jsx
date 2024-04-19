@@ -39,7 +39,7 @@ const CreatePasswordScreen = ({navigation, route}) => {
 
     if (password !== confirmPassword) {
       setIsPasswordInvalid(true);
-      setPasswordInvalidText('Passwords do not match.');
+      setPasswordInvalidText('The two passwords you entered do not match.');
       return false;
     }
 
