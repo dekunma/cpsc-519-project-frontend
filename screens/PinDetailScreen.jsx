@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Button, StyleSheet, Dimensions} from 'react-native';
+import {
+  Alert,
+  Button,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {Image} from '@gluestack-ui/themed';
 import {useNavigation} from '@react-navigation/native';
 import api from '../api';
@@ -10,6 +18,15 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
+import RNFS from 'react-native-fs';
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+  MenuProvider,
+} from 'react-native-popup-menu';
+
 const window = Dimensions.get('window');
 const PAGE_WIDTH = window.width;
 const colors = [
@@ -48,16 +65,56 @@ const PinDetailScreen = ({route}) => {
   }, [images, pinDetails.postId]);
 
   const renderItem = ({item}) => {
-    console.log('Rendering item with URL:', item); // Log the URL
-    // return <Image source={{uri: item}} />;
+    const saveImage = async () => {
+      const date = new Date();
+      const timestamp = date.getTime();
+      const path = `${RNFS.DocumentDirectoryPath}/${timestamp}.jpg`;
+
+      RNFS.downloadFile({
+        fromUrl: item,
+        toFile: path,
+      }).promise.then(res => {
+        if (res.statusCode === 200) {
+          Alert.alert('Image saved successfully');
+        } else {
+          Alert.alert('Failed to save image');
+        }
+      });
+    };
+
+    const handleLongPress = () => {
+      Alert.alert(
+        'Save Image',
+        'Do you want to save this image?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: saveImage},
+        ],
+        {cancelable: false},
+      );
+    };
+
     return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Image
-          source={{uri: item}}
-          style={{width: Dimensions.get('window').width, height: '100%'}}
-          resizeMode="cover"
-        />
-      </View>
+      <TouchableWithoutFeedback onLongPress={handleLongPress}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Menu>
+            <MenuTrigger>
+              <Image
+                source={{uri: item}}
+                style={{width: Dimensions.get('window').width, height: '100%'}}
+                resizeMode="cover"
+                alt="Image from post"
+              />
+            </MenuTrigger>
+            <MenuOptions>
+              <MenuOption onSelect={saveImage} text="Save Image" />
+            </MenuOptions>
+          </Menu>
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -75,78 +132,80 @@ const PinDetailScreen = ({route}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.description}>{pinDetails.description}</Text>
-      <Text style={styles.postId}>{pinDetails.postId}</Text>
-      {/* Displaying latitude and longitude */}
-      <Text>Latitude: {pinDetails.coordinate.latitude}</Text>
-      <Text>Longitude: {pinDetails.coordinate.longitude}</Text>
-      {/* Display the images associated with this post */}
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Carousel
-          {...baseOptions}
+    <MenuProvider>
+      <View style={styles.container}>
+        <Text style={styles.description}>{pinDetails.description}</Text>
+        {/*<Text style={styles.postId}>{pinDetails.postId}</Text>*/}
+        {/* Displaying latitude and longitude */}
+        {/*<Text>Latitude: {pinDetails.coordinate.latitude}</Text>*/}
+        {/*<Text>Longitude: {pinDetails.coordinate.longitude}</Text>*/}
+        {/* Display the images associated with this post */}
+        <View
           style={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            width: PAGE_WIDTH,
-            height: PAGE_WIDTH * 0.5,
-          }}
-          loop
-          pagingEnabled={pagingEnabled}
-          snapEnabled={snapEnabled}
-          autoPlay={autoPlay}
-          autoPlayInterval={1500}
-          onProgressChange={(_, absoluteProgress) =>
-            (progressValue.value = absoluteProgress)
-          }
-          mode="parallax"
-          modeConfig={{
-            parallaxScrollingScale: 0.9,
-            parallaxScrollingOffset: 50,
-          }}
-          data={images}
-          renderItem={({index}) => renderItem({item: images[index], index})}
-        />
-        {!!progressValue && (
-          <View
+          }}>
+          <Carousel
+            {...baseOptions}
             style={{
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              width: 5,
-              alignSelf: 'center',
-              position: 'absolute',
-              right: 5,
-              top: 40,
-            }}>
-            {images.map((backgroundColor, index) => {
-              return (
-                <PaginationItem
-                  backgroundColor={backgroundColor}
-                  animValue={progressValue}
-                  index={index}
-                  key={index}
-                  isRotate={isVertical}
-                  length={colors.length}
-                />
-              );
-            })}
-          </View>
-        )}
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: PAGE_WIDTH,
+              height: PAGE_WIDTH * 0.5,
+            }}
+            loop
+            pagingEnabled={pagingEnabled}
+            snapEnabled={snapEnabled}
+            autoPlay={autoPlay}
+            autoPlayInterval={1500}
+            onProgressChange={(_, absoluteProgress) =>
+              (progressValue.value = absoluteProgress)
+            }
+            mode="parallax"
+            modeConfig={{
+              parallaxScrollingScale: 0.9,
+              parallaxScrollingOffset: 50,
+            }}
+            data={images}
+            renderItem={({index}) => renderItem({item: images[index], index})}
+          />
+          {!!progressValue && (
+            <View
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                width: 5,
+                alignSelf: 'center',
+                position: 'absolute',
+                right: 5,
+                top: 40,
+              }}>
+              {images.map((backgroundColor, index) => {
+                return (
+                  <PaginationItem
+                    backgroundColor={backgroundColor}
+                    animValue={progressValue}
+                    index={index}
+                    key={index}
+                    isRotate={isVertical}
+                    length={images.length}
+                  />
+                );
+              })}
+            </View>
+          )}
+        </View>
+        <Button title="go back" onPress={() => navigation.goBack()} />
       </View>
-      <Button title="go back" onPress={() => navigation.goBack()} />
-    </View>
+    </MenuProvider>
   );
 };
 
 const PaginationItem = props => {
   const {animValue, index, length, backgroundColor, isRotate} = props;
-  const width = 40;
+  const width = 5;
 
   const animStyle = useAnimatedStyle(() => {
     let inputRange = [index - 1, index, index + 1];
@@ -209,6 +268,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     marginBottom: 10,
+    color: 'black',
   },
   postId: {
     fontSize: 14,
