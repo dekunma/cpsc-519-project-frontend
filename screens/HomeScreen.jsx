@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box, Fab, FabIcon, FabLabel, View, AddIcon} from '@gluestack-ui/themed';
 import {Home, User, Users} from 'lucide-react-native';
 import BottomNavigation from '../components/BottomNavigation';
+import UploadPhotosButton from '../components/UploadPhotosButton';
 import MapView, {Marker} from 'react-native-maps';
 import {useNavigation} from '@react-navigation/native';
 import ProfileScreen from './ProfileScreen';
@@ -39,12 +40,12 @@ class Pin {
 }
 
 const BottomFab = ({
-  isActive,
-  onPress,
-  buttonText,
-  icon,
-  bg = '$primary500',
-}) => {
+                     isActive,
+                     onPress,
+                     buttonText,
+                     icon,
+                     bg = '$primary500',
+                   }) => {
   return (
     <Box
       w="$full"
@@ -292,12 +293,12 @@ const HomeScreen = ({navigation}) => {
             />
           ) : (
             <>
-              <BottomFab
-                onPress={handleSelectPhoto}
-                isActive={activeTab === 'Home'}
+              <UploadPhotosButton
+                isActive={activeTab === 'Home' && isNewPostBottonPressed}
                 buttonText="Upload Photos"
                 icon={UploadIcon}
                 bg="$emerald500"
+                callbackFn={handleSelectPhoto}
               />
             </>
           )}
