@@ -26,6 +26,10 @@ import {
   MenuTrigger,
   MenuProvider,
 } from 'react-native-popup-menu';
+import UploadPhotosButton from "../components/UploadPhotosButton";
+import {UploadIcon} from "lucide-react-native";
+import {launchImageLibrary} from "react-native-image-picker";
+import {uploadImagesHelper} from "../utils/UploadImages";
 
 const window = Dimensions.get('window');
 const PAGE_WIDTH = window.width;
@@ -43,6 +47,7 @@ const PinDetailScreen = ({route}) => {
   const {pinDetails} = route.params;
   const navigation = useNavigation();
   const [images, setImages] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   console.debug('pinDetails = ' + JSON.stringify(pinDetails));
   useEffect(() => {
@@ -131,6 +136,23 @@ const PinDetailScreen = ({route}) => {
     height: PAGE_WIDTH * 1.0,
   };
 
+  const handleSelectPhoto = () => {
+      const options = {
+          mediaType: 'photo',
+          quality: 1,
+          selectionLimit: 9,
+      };
+      launchImageLibrary(options, response => {
+          if (response.didCancel) {
+              console.log('User cancelled image picker');
+          } else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+          } else {
+              uploadImagesHelper(response.assets, pinDetails.postId, setIsUploading, navigation);
+          }
+      });
+  }
+
   return (
     <MenuProvider>
       <View style={styles.container}>
@@ -197,6 +219,13 @@ const PinDetailScreen = ({route}) => {
             </View>
           )}
         </View>
+        <UploadPhotosButton
+          isActive={true}
+          buttonText="Upload Photos"
+          icon={UploadIcon}
+          bg="$emerald500"
+          callbackFn={handleSelectPhoto}
+        />
         <Button title="go back" onPress={() => navigation.goBack()} />
       </View>
     </MenuProvider>

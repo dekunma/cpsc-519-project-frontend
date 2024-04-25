@@ -19,6 +19,7 @@ import {ArrowLeftIcon} from 'lucide-react-native';
 import BarButton from '../components/BarButton';
 import {User} from 'lucide-react-native';
 import api from '../api';
+import {uploadImagesHelper} from "../utils/UploadImages";
 
 const NewPostScreen = ({navigation, route}) => {
   const {coordinates, images} = route.params;
@@ -41,32 +42,8 @@ const NewPostScreen = ({navigation, route}) => {
 
   const uploadImages = postId => {
     // upload images
-    imagesToUpload.forEach(image => {
-      let uploadImageFormData = new FormData();
-      uploadImageFormData.append('image', {
-        uri: image.uri,
-        name: image.fileName,
-        type: image.type,
-      });
-      uploadImageFormData.append('post_id', postId); // TODO: change placeholder
-      console.debug('uploading image ' + image.uri);
-      api
-        .post('/posts/upload-post-image', uploadImageFormData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(r => {
-          console.log('Successfully uploaded image. ');
-        })
-        .catch(e => {
-          console.error(e.response.data);
-        })
-        .finally(() => {
-          setIsUploading(false);
-          navigation.replace('HomeScreen');
-        });
-    });
+    uploadImagesHelper(imagesToUpload, postId, setIsUploading)
+        .then(r => {navigation.replace('HomeScreen');});
   };
 
   const handleAddPin = async () => {
