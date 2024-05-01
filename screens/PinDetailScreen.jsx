@@ -26,10 +26,10 @@ import {
   MenuTrigger,
   MenuProvider,
 } from 'react-native-popup-menu';
-import UploadPhotosButton from "../components/UploadPhotosButton";
-import {UploadIcon} from "lucide-react-native";
-import {launchImageLibrary} from "react-native-image-picker";
-import {uploadImagesHelper} from "../utils/UploadImages";
+import UploadPhotosButton from '../components/UploadPhotosButton';
+import {UploadIcon} from 'lucide-react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {uploadImagesHelper} from '../utils/UploadImages';
 
 const window = Dimensions.get('window');
 const PAGE_WIDTH = window.width;
@@ -67,7 +67,8 @@ const PinDetailScreen = ({route}) => {
         );
       })
       .catch(e => console.log(e.response.data));
-  }, [images, pinDetails.postId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renderItem = ({item}) => {
     const saveImage = async () => {
@@ -137,21 +138,26 @@ const PinDetailScreen = ({route}) => {
   };
 
   const handleSelectPhoto = () => {
-      const options = {
-          mediaType: 'photo',
-          quality: 1,
-          selectionLimit: 9,
-      };
-      launchImageLibrary(options, response => {
-          if (response.didCancel) {
-              console.log('User cancelled image picker');
-          } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-          } else {
-              uploadImagesHelper(response.assets, pinDetails.postId, setIsUploading, navigation);
-          }
-      });
-  }
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      selectionLimit: 9,
+    };
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        uploadImagesHelper(
+          response.assets,
+          pinDetails.postId,
+          setIsUploading,
+          navigation,
+        );
+      }
+    });
+  };
 
   return (
     <MenuProvider>
