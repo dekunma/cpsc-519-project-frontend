@@ -161,7 +161,7 @@ const ButtonGroup = ({setName, setAvatar}) => {
         setIsOpen={setOpenChangePasswordDialog}
         title="Change Password"
         isNegative={false}
-        confirmButtonText="Update Password"
+        confirmButtonText="Update"
         handleConfirm={handleChangePassword}>
         <FormControl w="$full" size="lg" mb="$4" isInvalid={isPasswordInvalid}>
           <Input>
