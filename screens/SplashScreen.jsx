@@ -1,7 +1,7 @@
-import {Heading, View} from '@gluestack-ui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect} from 'react';
 import {request, PERMISSIONS} from 'react-native-permissions';
+import Welcome from '../components/Welcome';
 
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
@@ -20,12 +20,6 @@ const SplashScreen = ({navigation}) => {
     });
   }, [navigation]);
 
-  return (
-    <>
-      <View>
-        <Heading>Splash Screen. TO BE REPLACED</Heading>
-      </View>
-    </>
-  );
+  return <Welcome />;
 };
 export default SplashScreen;
