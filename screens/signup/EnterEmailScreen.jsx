@@ -37,11 +37,11 @@ const EnterEmailScreen = ({navigation}) => {
 
   const handlePressButton = () => {
     setIsEmailInvalid(false);
-    if (!email.endsWith('@yale.edu')) {
-      setIsEmailInvalid(true);
-      setEmailInvalidText('Please use your yale.edu email.');
-      return;
-    }
+    // if (!email.endsWith('@yale.edu')) {
+    //   setIsEmailInvalid(true);
+    //   setEmailInvalidText('Please use your yale.edu email.');
+    //   return;
+    // }
 
     setIsButtonDisabled(true);
     api
@@ -78,6 +78,8 @@ const EnterEmailScreen = ({navigation}) => {
                 type="email"
                 placeholder="Email"
                 onChangeText={e => setEmail(e)}
+                keyboardType="email-address"
+                autoCorrect={false}
               />
             </Input>
             <FormControlHelper>

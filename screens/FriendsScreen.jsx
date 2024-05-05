@@ -183,7 +183,12 @@ const AddFriendScreen = ({setAddingFriend}) => {
         <InputSlot>
           <InputIcon as={SearchIcon} ml="$2" />
         </InputSlot>
-        <InputField placeholder="Email" onChangeText={onEmailChange} />
+        <InputField
+          placeholder="Email"
+          onChangeText={onEmailChange}
+          keyboardType="email-address"
+          autoCorrect={false}
+        />
       </Input>
 
       <Button
@@ -255,7 +260,7 @@ const FriendRequestScreen = ({ setCheckFriendRequest }) => {
 
   const handleAccept = id => {
     console.log(id)
-    api.post(`/friendships/accept-friend-request`, 
+    api.post(`/friendships/accept-friend-request`,
       {
         friend_id: id,
       })
@@ -269,7 +274,7 @@ const FriendRequestScreen = ({ setCheckFriendRequest }) => {
 
   const handleDismiss = id => {
     console.log(id)
-    api.post(`/friendships/dismiss-friend-request`, 
+    api.post(`/friendships/dismiss-friend-request`,
       {
         friend_id: id,
       })

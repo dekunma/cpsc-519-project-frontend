@@ -69,6 +69,8 @@ const LoginScreen = ({navigation}) => {
                 onChangeText={e => setEmail(e)}
                 type="email"
                 placeholder="Email"
+                keyboardType="email-address"
+                autoCorrect={false}
               />
             </Input>
           </FormControl>
