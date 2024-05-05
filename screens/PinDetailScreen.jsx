@@ -30,6 +30,7 @@ import UploadPhotosButton from '../components/UploadPhotosButton';
 import {UploadIcon} from 'lucide-react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {uploadImagesHelper} from '../utils/UploadImages';
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 
 const window = Dimensions.get('window');
 const PAGE_WIDTH = window.width;
@@ -80,8 +81,16 @@ const PinDetailScreen = ({route}) => {
         fromUrl: item,
         toFile: path,
       }).promise.then(res => {
+        console.log("The file saved to: ", path);
         if (res.statusCode === 200) {
-          Alert.alert('Image saved successfully');
+          CameraRoll.save(path, { type: 'photo' })
+            .then(() => {
+              Alert.alert('Image saved successfully');
+            })
+            .catch((error) => {
+              console.log('Error:', error);
+              Alert.alert('Failed to save image');
+            });
         } else {
           Alert.alert('Failed to save image');
         }
