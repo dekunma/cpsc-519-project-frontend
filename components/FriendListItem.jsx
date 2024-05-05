@@ -40,7 +40,7 @@ const FriendListItem = ({
           <AvatarFallbackText>{name}</AvatarFallbackText>
           <AvatarImage
             source={{
-              uri: avatarUri,
+              uri: avatarUri ? avatarUri : 'https://avatar.iran.liara.run/public/90',
             }}
             alt="avatar"
           />
